@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 
+	"groupie-tracker/internal/app"
 	"groupie-tracker/pkg/config"
 	"groupie-tracker/pkg/logger"
 )
@@ -19,6 +20,7 @@ func main() {
 	_ = logger.Init(cfg)
 
 	// app.Run() ...
+	app.Run(cfg)
 
 	//
 }

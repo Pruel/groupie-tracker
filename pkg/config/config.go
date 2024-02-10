@@ -30,31 +30,31 @@ const (
 // Config structures
 type (
 	Config struct {
-		ServiceName string
-		HTTPServer
-		HTTPClient
+		ServiceName string `json:"service_name"` // <- []byte(default.json) service_name
+		HTTPServer  `json:"http_server"`
+		HTTPClient  `json:"http_client"`
 		// DBConfig
-		Logger
+		Logger `json:"logger"` // encoding/json -> "logger" -> Logger "snake_case"
 	}
 
 	HTTPServer struct {
-		Host         string
-		Port         string
-		IdleTimeout  time.Duration
-		WriteTimeout time.Duration
-		ReadTimeout  time.Duration
-		MaxHeaderMb  int
+		Host         string        `json:"host"`
+		Port         string        `json:"port"`
+		IdleTimeout  time.Duration `json:"idle_timeout"`
+		WriteTimeout time.Duration `json:"write_timeout"`
+		ReadTimeout  time.Duration `json:"read_timeout"`
+		MaxHeaderMb  int           `json:"max_header_mb"`
 	}
 
 	HTTPClient struct {
-		Timeout time.Duration
+		Timeout time.Duration `json:"timeout"`
 	}
 
 	Logger struct {
-		Level     int
-		SourceKey bool
-		Output    string
-		Handler   string
+		Level     int    `json:"level"`
+		SourceKey bool   `json:"source_key"`
+		Output    string `json:"stdout"`
+		Handler   string `json:"handler"`
 	}
 )
 
@@ -64,7 +64,8 @@ const (
 )
 
 // InitConfig ...
-func InitConfig() (config *Config, err error) {
+func InitConfig() (*Config, error) {
+	cfg := &Config{}
 
 	// 1. setup config parameters from defautl configuraiton constants
 
@@ -77,8 +78,7 @@ func InitConfig() (config *Config, err error) {
 
 	// 5. set this parameters on the Config structure
 
-	return config, err
-
+	return setupConfig(cfg)
 }
 
 // setupConfig ...
@@ -91,6 +91,8 @@ func setupConfig(cfg *Config) (config *Config, err error) {
 	}
 
 	return config, err
+
+	// something
 }
 
 // parseConfigFile ...
@@ -135,3 +137,5 @@ func populateDefaults(cfg *Config) *Config {
 
 	return cfg
 }
+
+//hello

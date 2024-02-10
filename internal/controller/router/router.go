@@ -1,0 +1,32 @@
+package router
+
+import (
+	"log/slog"
+	"net/http"
+
+	"groupie-tracker/internal/controller"
+)
+
+// custom router
+type Router struct {
+	Mux *http.ServeMux // ServeMux
+}
+
+// New create and customazing the ServeMux router, and return
+func New() *Router {
+	return &Router{
+		Mux: http.NewServeMux(),
+	}
+}
+
+// InitRouter ...
+func (r *Router) InitRouter() error {
+	slog.Debug("the ServeMux router initializing")
+
+	r.Mux.HandleFunc("/", controller.MainController)         //
+	r.Mux.HandleFunc("/artist", controller.ArtistController) //
+
+	slog.Debug("the ServeMux router successful initialized")
+
+	return nil
+}
