@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -28,6 +29,7 @@ func Run(cfg *config.Config) error {
 	slog.Debug("http server successfully created")
 
 	//running the http server + -> for{ infinity logic}
+	fmt.Printf("\n\nServer running on -> http://%s:%s\n\n", cfg.HTTPServer.Host, cfg.HTTPServer.Port)
 	go func() {
 		if err := srv.Run(); err != nil {
 			slog.Error(err.Error())
@@ -53,3 +55,4 @@ func Run(cfg *config.Config) error {
 
 	return nil
 }
+

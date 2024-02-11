@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	"groupie-tracker/internal/controller/router"
 	"groupie-tracker/pkg/config"
@@ -31,9 +32,9 @@ func New(cfg *config.Config, handler *router.Router) *Server {
 		httpServer: &http.Server{
 			Addr:           addr,
 			MaxHeaderBytes: cfg.HTTPServer.MaxHeaderMb << 20, //3 mb
-			IdleTimeout:    cfg.HTTPServer.IdleTimeout,
-			ReadTimeout:    cfg.HTTPServer.ReadTimeout,
-			WriteTimeout:   cfg.HTTPServer.WriteTimeout,
+			IdleTimeout:    cfg.HTTPServer.IdleTimeout * time.Second,
+			ReadTimeout:    cfg.HTTPServer.ReadTimeout * time.Second,
+			WriteTimeout:   cfg.HTTPServer.WriteTimeout * time.Second,
 			Handler:        handler.Mux,
 		},
 	}
@@ -47,5 +48,5 @@ func (s *Server) Run() error {
 
 // Shutdown ...
 func (s *Server) Shutdown(ctx context.Context) error {
-	return s.Shutdown(ctx)
+	return s.httpServer.Shutdown(ctx)
 }
