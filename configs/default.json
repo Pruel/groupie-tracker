@@ -1,0 +1,22 @@
+{
+    "service_name": "groupie_tracker",
+    "http_server": {
+        "host": "localhost",
+        "port": "8000",
+        "idle_timeout": 30,
+        "write_timeout": 10,
+        "read_timeout": 10,
+        "max_header_mb": 3
+    },
+    "http_client": {
+        "timeout": 15
+    },
+    "logger": {
+        "level": -4,
+        "source_key": true,
+        "output": "stdout",
+        "handler": "json"
+    }
+}
+
+ 
