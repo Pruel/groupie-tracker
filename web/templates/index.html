@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Groupie Tracker</title>
 </head>
 <body>
-    
+    <h1>groupie tracker</h1>
+    <main class="index">
+        {{range .}}
+        <a href="/artist/{{.ID}}.html">
+            <div class="artist-card">
+                <img src="{{.Image}}" alt="{{.Name}}">
+                <div>
+                    <p>{{.Name}}</p>
+                </div>
+            </div>
+        </a>
+        {{end}}
+    </main>
 </body>
 </html>

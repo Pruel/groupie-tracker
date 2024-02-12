@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>{{.Name}}</title>
+</head>
+<body>
+    <h1>groupie tracker</h1>
+    <main class="artist">
+        <div class="logo">
+            <div>
+                <img src="{{.Image}}" alt="" class="img-logo">
+                <h2>{{.Name}}</h2>
+            </div>
+            <p class="created">created {{.CreationDate}} • first album {{.FirstAlbum}}</p>
+        </div>
+        <div class="info">
+            <section class="concerts">
+                <h3>Concerts:</h3>
+                <ul>
+                    {{range $city, $dates := .Relation.DatesLocations}}
+                        <li class="city">
+                            <p>{{ $city }}</p>
+                            <ul>
+                                {{range $dates}}
+                                    <li class="date">{{.}}</li>
+                                {{end}}
+                            </ul>
+                        </li>
+                    {{end}}
+                </ul>
+            </section>
+            <section class="members">
+                <h3>Members:</h3>
+                <ul>
+                    {{range .Members}}
+                        <li>{{.}}</li>
+                    {{end}}
+                </ul>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
