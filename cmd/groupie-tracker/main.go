@@ -20,7 +20,7 @@ func main() {
 	_ = logger.Init(cfg)
 
 	// app.Run() ...
-	app.Run(cfg)
-
-	//
+	if err := app.Run(cfg); err != nil {
+		slog.Error(err.Error())
+	}
 }
