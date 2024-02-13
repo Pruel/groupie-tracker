@@ -1,3 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Raleway&display=swap');
+* {
+    margin: 0px;
+    padding: 0px;
+}
+body {
+    background-color: #1C1C1C;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 80px;
+}
+a {
+    text-decoration: none;
+}
+h1 {
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 60px;
+    font-weight: 400;
+    margin: 150px;
+}
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 400;
+}
+h3 {
+    font-size: 30px;
+    font-weight: 400;
+}
+ul {
+    list-style-type: none;
+}
+li {
+    font-size: 18px;
+}
+
+.background-light {
+    background-image: url("/web/screenshot/The_best_DJ_of_the_light.jpg");
+}
+
+.index {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0px 80px 0px 80px;
+    gap: 80px;
+}
+.artist-card {
+    background-color: #303030;
+    border-radius: 10px;
+    color: white;
+    height: 240px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 14px;
+}
+.artist-card img {
+    border-radius: 10px 10px 0 0;
+    width: 200px;
+    filter: grayscale(100%) opacity(0.65);
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+.artist-card:hover img {
+    filter: grayscale(0%) opacity(1);
+}
+.artist-card div {
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    padding-top: 9px;
+}
+.artist {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 80px;
+    width: 60%;
+    color: white;
+}
+.logo div {
+    display: flex;
+    align-items: flex-end;
+}
+.img-logo {
+    height: 180px;
+    border-radius: 10px;
+    margin: 0px 12px 12px 0px;
+}
+.created {
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    color: #A4A4A4;
+}
+.info {
+    display: flex;
+    gap: 300px;
+    font-family: 'Raleway', sans-serif;
+}
+.concerts {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.members {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.city {
+    margin-bottom: 12px;
+}
+.date {
+    margin-left: 10px;
+}
+
 .background-image {
     background-image: url(/static/bg.jpg);
     height: 100vh;
