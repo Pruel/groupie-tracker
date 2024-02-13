@@ -1,41 +1,48 @@
 package model
 
 type Artist struct {
-	ID           int
-	Name         string
-	Members      []string
-	CreationDate int
-	FirstAlbum   string
-	Locations    string
-	Dates        string
-	Relation     string
-	Image        string
+	ID           int      `json:"id"`
+	Name         string   `json:"name"`
+	Members      []string `json:"members"`
+	CreationDate int      `json:"creationDate"`
+	FirstAlbum   string   `json:"firstAlbum"`
+	Locations    string   `json:"locations"`
+	Dates        string   `json:"dates"`
+	Relation     string   `json:"relations"`
+	Image        string   `json:"image"`
+}
+
+type ArtistInfo struct {
+	Artist    Artist
+	Locations Locations
+	Dates     Dates
+	Relations Relations
 }
 
 type Locations struct {
-	ID        int
-	Dates     string
-	Locations []string
+	ID        int      `json:"id"`
+	Dates     string   `json:"dates"`
+	Locations []string `json:"locations"`
 }
 
 type Dates struct {
-	ID    int
-	Dates []string
+	ID    int    `json:"id"`
+	Dates string `json:"dates"`
 }
 
 type Relations struct {
-	ID             int
-	DatesLocations map[string][]string
+	ID             int                 `json:"id"`
+	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
 type LocationsIndex struct {
-	Index []Locations
+	Index []Locations `json:"index"`
 }
 
 type DatesIndex struct {
-	Index []Dates
+	Index []Dates `json:"index"`
 }
 
 type RelationsIndex struct {
-	Index []Relations
+	Index []Relations `json:"index"`
 }

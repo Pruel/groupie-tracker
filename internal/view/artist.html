@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
-    <title>{{.Name}}</title>
+    <title>{{.Artist.Name}}</title>
 </head>
 <body>
     <h1>groupie tracker</h1>
     <main class="artist">
         <div class="logo">
             <div>
-                <img src="{{.Image}}" alt="" class="img-logo">
-                <h2>{{.Name}}</h2>
+                <img src="{{.Artist.Image}}" alt="" class="img-logo">
+                <h2>{{.Artist.Name}}</h2>
             </div>
-            <p class="created">created {{.CreationDate}} • first album {{.FirstAlbum}}</p>
+            <p class="created">created {{.Artist.CreationDate}} • first album {{.Artist.FirstAlbum}}</p>
         </div>
         <div class="info">
             <section class="concerts">
                 <h3>Concerts:</h3>
                 <ul>
-                    {{range $city, $dates := .Relation.DatesLocations}}
+                    {{range $city, $dates := .Relations.DatesLocations}}
                         <li class="city">
                             <p>{{ $city }}</p>
                             <ul>
@@ -35,7 +35,7 @@
             <section class="members">
                 <h3>Members:</h3>
                 <ul>
-                    {{range .Members}}
+                    {{range .Artist.Members}}
                         <li>{{.}}</li>
                     {{end}}
                 </ul>

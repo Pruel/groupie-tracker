@@ -42,7 +42,7 @@ func New(cfg *config.Config, handler *router.Router) *Server {
 
 // Run ...
 func (s *Server) Run() error {
-	slog.Debug("the http server successful running")
+	slog.Debug("the http server successful running\n")
 	return s.httpServer.ListenAndServe()
 }
 

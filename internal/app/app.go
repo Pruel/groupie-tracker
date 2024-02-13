@@ -29,7 +29,7 @@ func Run(cfg *config.Config) error {
 	slog.Debug("http server successfully created")
 
 	//running the http server + -> for{ infinity logic}
-	fmt.Printf("\n\nServer running on -> http://%s:%s\n\n", cfg.HTTPServer.Host, cfg.HTTPServer.Port)
+	fmt.Printf("\n\nServer running on -> http://%s:%s\n\nPress Ctrl+C for stop\n\n", cfg.HTTPServer.Host, cfg.HTTPServer.Port)
 	go func() {
 		if err := srv.Run(); err != nil {
 			slog.Error(err.Error())
@@ -55,4 +55,3 @@ func Run(cfg *config.Config) error {
 
 	return nil
 }
-

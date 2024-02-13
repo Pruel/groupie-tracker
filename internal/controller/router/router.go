@@ -23,6 +23,8 @@ func New() *Router {
 func (r *Router) InitRouter() error {
 	slog.Debug("the ServeMux router initializing")
 
+	r.Mux.Handle("/view/", http.StripPrefix("/view/", http.FileServer(http.Dir("./../../view/"))))
+	// r.Mux.Handle("/view/", http.StripPrefix("/view/", http.FileServer(http.Dir(controller.GetTmplFilepath("view")))))
 	r.Mux.HandleFunc("/", controller.MainController)         //
 	r.Mux.HandleFunc("/artist", controller.ArtistController) //
 

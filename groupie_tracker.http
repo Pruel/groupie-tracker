@@ -1,0 +1,59 @@
+GET https://groupietrackers.herokuapp.com/api HTTP/1.1
+
+# the main api end point
+
+# {
+#   "artists": "https://groupietrackers.herokuapp.com/api/artists",
+#   "locations": "https://groupietrackers.herokuapp.com/api/locations",
+#   "dates": "https://groupietrackers.herokuapp.com/api/dates",
+#   "relation": "https://groupietrackers.herokuapp.com/api/relation"
+# }
+
+### 
+# artists endpoint
+
+GET https://groupietrackers.herokuapp.com/api/artists HTTP/1.1
+
+
+### 
+# artist by id
+
+GET https://groupietrackers.herokuapp.com/api/artists/1 HTTP/1.1
+
+
+
+### 
+# locations endpoint
+
+GET https://groupietrackers.herokuapp.com/api/locations HTTP/1.1
+
+### 
+# locations by id endpoint
+
+GET https://groupietrackers.herokuapp.com/api/locations/1 HTTP/1.1
+
+###
+# dates endpoint
+
+GET https://groupietrackers.herokuapp.com/api/dates HTTP/1.1
+
+###
+# dates by id endpoint
+
+GET https://groupietrackers.herokuapp.com/api/dates/1 HTTP/1.1
+
+###
+# relation endpoint
+
+GET https://groupietrackers.herokuapp.com/api/relation HTTP/1.1
+
+###
+# relations by id endpoint
+
+GET https://groupietrackers.herokuapp.com/api/relation/1 HTTP/1.1
+
+# ----------------------------------------
+
+###
+GET http://localhost:8000/ HTTP/1.1
+
