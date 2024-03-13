@@ -12,13 +12,13 @@ const (
 	defaultServiceName = "groupie_tracker"
 	// HTTP Server
 	defaultHTTPServerHost         = "localhost"
-	defaultHTTPServerPort         = "8000"
-	defaultHTTPServerIdleTimeout  = time.Second * 30
-	defaultHTTPServerWriteTimeout = time.Second * 10
-	defaultHTTPServerReadTimeout  = time.Second * 10
-	defaultMaxHeaderMb            = 3 << 20 // 3 mb
+	defaultHTTPServerPort         = "8080"
+	defaultHTTPServerIdleTimeout  = 30 * time.Second 
+	defaultHTTPServerWriteTimeout = 10 * time.Second 
+	defaultHTTPServerReadTimeout  = 10 * time.Second 
+	defaultHTTPServerMaxHeaderMb            = 3 << 20 // 3 mb
 	// HTTP Client
-	defaultHTTPClinetTimeout = time.Second * 15
+	defaultHTTPClientTimeout = 15 * time.Second 
 
 	// Logger
 	defaultLoggerLevel     = -4
@@ -53,7 +53,7 @@ type (
 	Logger struct {
 		Level     int    `json:"level"`
 		SourceKey bool   `json:"source_key"`
-		Output    string `json:"stdout"`
+		Output    string `json:"output"`
 		Handler   string `json:"handler"`
 	}
 )
@@ -124,10 +124,10 @@ func populateDefaults(cfg *Config) *Config {
 	cfg.HTTPServer.IdleTimeout = defaultHTTPServerIdleTimeout
 	cfg.HTTPServer.WriteTimeout = defaultHTTPServerWriteTimeout
 	cfg.HTTPServer.ReadTimeout = defaultHTTPServerReadTimeout
-	cfg.HTTPServer.MaxHeaderMb = defaultMaxHeaderMb
+	cfg.HTTPServer.MaxHeaderMb = defaultHTTPServerMaxHeaderMb
 
 	// HTTPClinet
-	cfg.HTTPClient.Timeout = defaultHTTPClinetTimeout
+	cfg.HTTPClient.Timeout = defaultHTTPClientTimeout
 
 	// Logger
 	cfg.Logger.Level = defaultLoggerLevel

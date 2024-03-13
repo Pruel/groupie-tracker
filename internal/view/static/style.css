@@ -117,7 +117,7 @@ li {
 }
 
 .background-image {
-    background-image: url(/static/bg.jpg);
+    background-image: url('/web/screenshot/The_best_DJ_of_the_light.jpg');
     height: 100vh;
     background-repeat: no-repeat;
     background-size: cover;

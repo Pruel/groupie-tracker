@@ -44,10 +44,6 @@ li {
     font-size: 18px;
 }
 
-.background-light {
-    background-image: url("/web/screenshot/The_best_DJ_of_the_light.jpg");
-}
-
 .index {
     display: flex;
     flex-wrap: wrap;
@@ -82,7 +78,7 @@ li {
     <title>Groupie Tracker</title>
 </head>
 <body class="background-light">
-    <h1 style="color: aqua;">groupie tracker</h1>
+    <h1 style="color: rgb(240, 240, 240);">groupie tracker</h1>
     <main class="index">
         {{range .}}
         <a href="/artist?artistID={{.ID}}">
