@@ -38,10 +38,6 @@ li {
     font-size: 18px;
 }
 
-.background-light {
-    background-image: url("/web/screenshot/The_best_DJ_of_the_light.jpg");
-}
-
 .index {
     display: flex;
     flex-wrap: wrap;
