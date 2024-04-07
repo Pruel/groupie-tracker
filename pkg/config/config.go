@@ -13,12 +13,12 @@ const (
 	// HTTP Server
 	defaultHTTPServerHost         = "localhost"
 	defaultHTTPServerPort         = "8080"
-	defaultHTTPServerIdleTimeout  = 30 * time.Second 
-	defaultHTTPServerWriteTimeout = 10 * time.Second 
-	defaultHTTPServerReadTimeout  = 10 * time.Second 
-	defaultHTTPServerMaxHeaderMb            = 3 << 20 // 3 mb
+	defaultHTTPServerIdleTimeout  = 30 * time.Second
+	defaultHTTPServerWriteTimeout = 10 * time.Second
+	defaultHTTPServerReadTimeout  = 10 * time.Second
+	defaultHTTPServerMaxHeaderMb  = 3 << 20 // 3 mb
 	// HTTP Client
-	defaultHTTPClientTimeout = 15 * time.Second 
+	defaultHTTPClientTimeout = 15 * time.Second
 
 	// Logger
 	defaultLoggerLevel     = -4

@@ -46,3 +46,15 @@ type DatesIndex struct {
 type RelationsIndex struct {
 	Index []Relations `json:"index"`
 }
+
+type MainData struct {
+	Artists     []Artist
+	FiltersData Filters
+}
+
+type Filters struct {
+	CreationDate string
+	FirstAlbum   string
+	Members      int
+	Locations    string
+}
