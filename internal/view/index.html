@@ -7,10 +7,48 @@
     <link rel="stylesheet" href="/static/style.css">
     <title>Groupie Tracker</title>
 </head>
-<body class="background-light">
-    <h1>groupie tracker</h1>
+<body>
+    <h1>Groupie-tracker</h1>
+
+    <form action="/filter" method="POST" class="filter-form">
+        <div class="filter-container">
+            <label for="creationDate">Career Starting Year:</label>
+            <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.FirstCreationDate}}" name="creationDate" id="creationDate">
+            <span id="dateValue">{{.FiltersData.FirstCreationDate}}</span> 
+        </div>
+
+        <div class="filter-container">
+            <label for="firstAlbumDate">First Album Year:</label>
+            <input type="range" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.LowestFirstAlbum}}" name="firstAlbumDate" id="firstAlbumDate">
+            <span id="dateValue">{{.FiltersData.LowestFirstAlbum}}</span> 
+        </div>
+
+        <div class="filter-container">
+            <label>Number of Members:</label>
+            <div>
+                {{range .FiltersData.Members}} 
+                <!-- Adjust the value and names as needed -->
+                <input type="checkbox" id="members{{.}}" name="members{{.}}" value="{{.}}">
+                <label for="members{{.}}">{{.}}</label>
+                {{end}}
+            </div>
+        </div>        
+
+        <div class="filter-container"> 
+            <h3>Locations:</h3>
+            <select name="locations">
+                {{ range .FiltersData.Locations}}
+                <option value="{{.}}">{{.}}</option>
+                {{end}}
+            </select>
+        </div>
+
+        <button type="submit">Apply Filters</button>
+    </form>
+
     <main class="index">
-        {{range .}}
+        <!-- Your artists cards go here -->
+        {{range .Artists}}
         <a href="/artist?artistID={{.ID}}">
             <div class="artist-card">
                 <img src="{{.Image}}" alt="{{.Name}}">
@@ -21,5 +59,13 @@
         </a>
         {{end}}
     </main>
+    
+    <script>
+        // JavaScript для обновления значения года в label
+        document.getElementById('creationDate').oninput = function() {
+            document.getElementById('dateValue').textContent = this.value;
+        }
+    </script>
+
 </body>
 </html>

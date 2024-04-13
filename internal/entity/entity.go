@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Artist struct {
 	ID           int      `json:"id"`
@@ -53,8 +53,10 @@ type MainData struct {
 }
 
 type Filters struct {
-	CreationDate string
-	FirstAlbum   string
-	Members      int
-	Locations    string
+	FirstCreationDate int
+	LastCreationDate  int
+	LowestFirstAlbum  string
+	HighestFirstAlbum string
+	Members           []int
+	Locations         []string
 }

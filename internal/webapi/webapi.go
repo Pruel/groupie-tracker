@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"groupie-tracker/internal/model"
+	"groupie-tracker/internal/entity"
 )
 
 // API URLs
@@ -63,8 +63,8 @@ func (c *Client) GetDataFromAPI(url string) ([]byte, error) {
 }
 
 // getAllArtists ...
-func (c *Client) GetAllArtists() ([]model.Artist, error) {
-	artist := []model.Artist{}
+func (c *Client) GetAllArtists() ([]entity.Artist, error) {
+	artist := []entity.Artist{}
 
 	data, err := c.GetDataFromAPI(artistsURL)
 	if err != nil {
@@ -79,8 +79,8 @@ func (c *Client) GetAllArtists() ([]model.Artist, error) {
 }
 
 // GetArtistInfoByID ...
-func (c *Client) GetArtistInfoByID(ID string) (model.ArtistInfo, error) {
-	artistInfo := model.ArtistInfo{}
+func (c *Client) GetArtistInfoByID(ID string) (entity.ArtistInfo, error) {
+	artistInfo := entity.ArtistInfo{}
 
 	artist, err := c.GetArtistByID(ID)
 	if err != nil {
@@ -106,7 +106,7 @@ func (c *Client) GetArtistInfoByID(ID string) (model.ArtistInfo, error) {
 		return artistInfo, err
 	}
 
-	return model.ArtistInfo{
+	return entity.ArtistInfo{
 		Artist:    artist,
 		Locations: location,
 		Dates:     dates,
@@ -115,8 +115,8 @@ func (c *Client) GetArtistInfoByID(ID string) (model.ArtistInfo, error) {
 }
 
 // GetArtistByID ...
-func (c *Client) GetArtistByID(ID string) (model.Artist, error) {
-	artist := model.Artist{}
+func (c *Client) GetArtistByID(ID string) (entity.Artist, error) {
+	artist := entity.Artist{}
 
 	data, err := c.GetDataFromAPI(cancatURLs(artistsURL, ID))
 	if err != nil {
@@ -133,8 +133,8 @@ func (c *Client) GetArtistByID(ID string) (model.Artist, error) {
 }
 
 // GetLocationsByID ...
-func (c *Client) GetLocationsByID(ID string) (model.Locations, error) {
-	locations := model.Locations{}
+func (c *Client) GetLocationsByID(ID string) (entity.Locations, error) {
+	locations := entity.Locations{}
 
 	data, err := c.GetDataFromAPI(cancatURLs(locationsURL, ID))
 	if err != nil {
@@ -151,8 +151,8 @@ func (c *Client) GetLocationsByID(ID string) (model.Locations, error) {
 }
 
 // GetDatesByID ...
-func (c *Client) GetDatesByID(ID string) (model.Dates, error) {
-	dates := model.Dates{}
+func (c *Client) GetDatesByID(ID string) (entity.Dates, error) {
+	dates := entity.Dates{}
 
 	data, err := c.GetDataFromAPI(cancatURLs(locationsURL, ID))
 	if err != nil {
@@ -169,8 +169,8 @@ func (c *Client) GetDatesByID(ID string) (model.Dates, error) {
 }
 
 // GetRelationsByID ...
-func (c *Client) GetRelationsByID(ID string) (model.Relations, error) {
-	relations := model.Relations{}
+func (c *Client) GetRelationsByID(ID string) (entity.Relations, error) {
+	relations := entity.Relations{}
 
 	data, err := c.GetDataFromAPI(cancatURLs(relationURL, ID))
 	if err != nil {
