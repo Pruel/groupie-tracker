@@ -10,7 +10,7 @@
 <body>
     <h1>Groupie-tracker</h1>
 
-    <form action="/filter" method="POST" class="filter-form">
+    <form action="/filter" method="GET" class="filter-form"> // /?creationDate=1970&firstAlbum=
         <div class="filter-container">
             <label for="creationDate">Career Starting Year:</label>
             <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.FirstCreationDate}}" name="creationDate" id="creationDate">

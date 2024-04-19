@@ -14,7 +14,7 @@ func PrepareFilterData(artists []entity.Artist) (*entity.Filters, error) {
 	}
 	filter := &entity.Filters{}
 	// AddCreationDate
-	filter = AddCreationDate(artists, filter) 
+	filter = AddCreationDate(artists, filter)
 
 	// AddFirstAlbumPublishDate
 	filter = AddFirstAlbumPublishDate(artists, filter)
@@ -68,9 +68,7 @@ func AddNumMembers(artists []entity.Artist, filter *entity.Filters) *entity.Filt
 
 	}
 
-  // home work
-  // sort filter.Members > sort
-
+	sort.Ints(filter.Members)
 
 	return filter
 }
