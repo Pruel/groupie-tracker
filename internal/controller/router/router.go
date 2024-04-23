@@ -29,7 +29,7 @@ func (r *Router) InitRouter() error {
 
 	// r.Mux.Handle("/view/", http.StripPrefix("/view/", http.FileServer(http.Dir(controller.GetTmplFilepath("view")))))
 	r.Mux.HandleFunc("/", controller.MainController)         //
-	r.Mux.HandleFunc("/filter", controller.FilterController)         //
+	r.Mux.HandleFunc("/filter", controller.FilterController) //
 	r.Mux.HandleFunc("/artist", controller.ArtistController) //
 
 	slog.Debug("the ServeMux router successful initialized")

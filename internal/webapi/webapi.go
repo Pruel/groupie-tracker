@@ -185,3 +185,55 @@ func (c *Client) GetRelationsByID(ID string) (entity.Relations, error) {
 
 	return relations, nil
 }
+
+// GetAllUniqueLocations
+
+	// 1. a new instance of the Location structure
+	// 2. get from webapi data by url = get all locations
+	// 3. after, unmarshall data into the locations instance
+	// 4. a. for range locations
+	//	  b. location - elem =  create a new map with prealocating
+	// 5. if unique location, save this location into a new locations slice
+	// 6. parse locations value 
+	// 7. return the new locations slice
+func (c *Client) GetAllUniqueLocations() ([]string, error){
+	locations := []entity.Locations{}
+
+	data, err := c.GetDataFromAPI(locationsURL)
+	if err != nil {
+		slog.Error(err.Error())
+		return nil, err
+	}
+
+	if err := json.Unmarshal(data, &locations); err != nil {
+		slog.Error(err.Error())
+		return nil, err
+	}
+
+	// map for unique locations
+	alocSize := len(locations)
+	mapLoc := make(map[string]string, alocSize)
+	uniqueLocs := make([]string, 0, alocSize)
+
+	for _, elem := range locations {
+		for _, loc := range elem.Locations {
+			// parseLocations
+			if _, exists := mapLoc[loc]; !exists {
+				mapLoc[loc] = loc
+				uniqueLocs = append(uniqueLocs, loc)
+			}
+		}
+	}
+
+	return uniqueLocs, nil
+}
+
+
+// parseLocations
+func parseAndFormatLocations(loc string) string {
+	loc = strings.ReplaceAll(loc, "-", ", ") // Берёт всю строку и первый аргумент наш целевой таргет что будет менять, второй аргумент на что меняем 
+	loc = strings.ReplaceAll(loc, " ", ",") // some_cool_developer // А
+	loc = strings.ToTitle(loc)
+
+	return loc
+}
