@@ -7,7 +7,7 @@ import (
 	"groupie-tracker/pkg/config"
 )
 
-// Logger structure
+// Logger structure Базовый кейс который даёт полный путь и укажет строку ошибки 
 
 // Init Initializing and customisation the slog logger
 func Init(cfg *config.Config) (log *slog.Logger) {
