@@ -20,6 +20,8 @@ const (
 	relationURL  = "https://groupietrackers.herokuapp.com/api/relation"
 )
 
+var LocationsURL = "https://groupietrackers.herokuapp.com/api/locations"
+
 // Client ...
 type Client struct {
 	httpClient *http.Client
@@ -150,6 +152,41 @@ func (c *Client) GetLocationsByID(ID string) (entity.Locations, error) {
 	return locations, nil
 }
 
+// GetLocationsByID ...
+func (c *Client) GetLocationsByURL(URL string) (entity.Locations, error) {
+	locations := entity.Locations{}
+
+	data, err := c.GetDataFromAPI(URL)
+	if err != nil {
+		slog.Error(err.Error())
+		return locations, err
+	}
+
+	if err := json.Unmarshal(data, &locations); err != nil {
+		slog.Error(err.Error())
+		return locations, err
+	}
+
+	return locations, nil
+}
+
+// IV. locations group []string{}
+// locURL := webapi.LocationsURL                // http://hearouku.app.locations
+// locURL = strings.Join([]string{locURL}, "/") // // http://hearouku.app.locations/
+
+// gID, ok := strings.CutPrefix(group.Locations, locURL) // http://hearouku.app.locations/1 = 1
+// if !ok {
+// 	continue
+// }
+
+// gLocs, err := cl.GetLocationsByID(gID)
+// if err != nil {
+// 	slog.Error(err.Error())
+// 	continue
+// }
+
+// gLocs := webapi.GetLocationByURL(group.Locations)
+
 // GetDatesByID ...
 func (c *Client) GetDatesByID(ID string) (entity.Dates, error) {
 	dates := entity.Dates{}
@@ -188,16 +225,16 @@ func (c *Client) GetRelationsByID(ID string) (entity.Relations, error) {
 
 // GetAllUniqueLocations
 
-	// 1. a new instance of the Location structure
-	// 2. get from webapi data by url = get all locations
-	// 3. after, unmarshall data into the locations instance
-	// 4. a. for range locations
-	//	  b. location - elem =  create a new map with prealocating
-	// 5. if unique location, save this location into a new locations slice
-	// 6. parse locations value 
-	// 7. return the new locations slice
-func (c *Client) GetAllUniqueLocations() ([]string, error){
-	locations := []entity.Locations{}
+//  1. a new instance of the Location structure
+//  2. get from webapi data by url = get all locations
+//  3. after, unmarshall data into the locations instance
+//  4. a. for range locations
+//     b. location - elem =  create a new map with prealocating
+//  5. if unique location, save this location into a new locations slice
+//  6. parse locations value
+//  7. return the new locations slice
+func (c *Client) GetAllUniqueLocations() ([]string, error) {
+	locations := entity.LocationsIndex{}
 
 	data, err := c.GetDataFromAPI(locationsURL)
 	if err != nil {
@@ -205,19 +242,20 @@ func (c *Client) GetAllUniqueLocations() ([]string, error){
 		return nil, err
 	}
 
-	if err := json.Unmarshal(data, &locations); err != nil {
-		slog.Error(err.Error())
+	if err := json.Unmarshal(data, &locations); err != nil { // Bug
+		slog.Error(err.Error()) // Bug
 		return nil, err
 	}
 
 	// map for unique locations
-	alocSize := len(locations)
+	alocSize := len(locations.Index)
 	mapLoc := make(map[string]string, alocSize)
 	uniqueLocs := make([]string, 0, alocSize)
 
-	for _, elem := range locations {
-		for _, loc := range elem.Locations {
+	for _, locElem := range locations.Index {
+		for _, loc := range locElem.Locations {
 			// parseLocations
+			loc = parseAndFormatLocations(loc)
 			if _, exists := mapLoc[loc]; !exists {
 				mapLoc[loc] = loc
 				uniqueLocs = append(uniqueLocs, loc)
@@ -228,12 +266,11 @@ func (c *Client) GetAllUniqueLocations() ([]string, error){
 	return uniqueLocs, nil
 }
 
-
 // parseLocations
 func parseAndFormatLocations(loc string) string {
-	loc = strings.ReplaceAll(loc, "-", ", ") // Берёт всю строку и первый аргумент наш целевой таргет что будет менять, второй аргумент на что меняем 
-	loc = strings.ReplaceAll(loc, " ", ",") // some_cool_developer // А
-	loc = strings.ToTitle(loc)
+	loc = strings.ReplaceAll(loc, "-", ", ") // Берёт всю строку и первый аргумент наш целевой таргет что будет менять, второй аргумент на что меняем
+	loc = strings.ReplaceAll(loc, "_", " ")  // some_cool_developer // А
+	loc = strings.Title(loc)
 
 	return loc
 }

@@ -10,17 +10,17 @@
 <body>
     <h1>Groupie-tracker</h1>
 
-    <form action="/filter" method="GET" class="filter-form"> // /?creationDate=1970&firstAlbum=
+    <form action="/filter" method="POST" class="filter-form">
         <div class="filter-container">
             <label for="creationDate">Career Starting Year:</label>
             <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.FirstCreationDate}}" name="creationDate" id="creationDate">
-            <span id="dateValue">{{.FiltersData.FirstCreationDate}}</span> 
+            <!-- <span id="dateValue">{{.FiltersData.FirstCreationDate}}</span>  -->
         </div>
 
         <div class="filter-container">
             <label for="firstAlbumDate">First Album Year:</label>
-            <input type="range" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.LowestFirstAlbum}}" name="firstAlbumDate" id="firstAlbumDate">
-            <span id="dateValue">{{.FiltersData.LowestFirstAlbum}}</span> 
+            <input type="date" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.LowestFirstAlbum}}" name="firstAlbumDate" id="firstAlbumDate">
+            <!-- <span id="dateValue">{{.FiltersData.LowestFirstAlbum}}</span>  -->
         </div>
 
         <div class="filter-container">
@@ -59,9 +59,7 @@
         </a>
         {{end}}
     </main>
-    
     <script>
-        // JavaScript для обновления значения года в label
         document.getElementById('creationDate').oninput = function() {
             document.getElementById('dateValue').textContent = this.value;
         }

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"groupie-tracker/internal/asort"
 	"groupie-tracker/internal/entity"
+	"groupie-tracker/internal/webapi"
+	"log/slog"
 	"sort"
 )
 
@@ -74,8 +76,13 @@ func AddNumMembers(artists []entity.Artist, filter *entity.Filters) *entity.Filt
 }
 
 func AddLocations(artists []entity.Artist, filter *entity.Filters) *entity.Filters {
-	for _, artist := range artists {
-		filter.Locations = append(filter.Locations, artist.Locations)
+	locations, err := webapi.New().GetAllUniqueLocations()
+	if err != nil {
+		slog.Error(err.Error())
+		return nil
 	}
+
+	filter.Locations = locations
+
 	return filter
 }
