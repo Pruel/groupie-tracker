@@ -253,7 +253,7 @@ func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArtists []ent
 }
 
 // convStrToTime, return time.Time.Year
-func convStrToTime(strDate string, flag string) int {
+func convStrToTime(strDate string, flag string) int { // BUGG time format
 	if flag == "" {
 		return 0
 	}
