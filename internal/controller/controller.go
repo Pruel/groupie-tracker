@@ -56,13 +56,16 @@ func MainController(w http.ResponseWriter, r *http.Request) {
 		slog.Error(err.Error()) // like this
 	}
 
+	fgroups := make([]entity.Artist, len(artists))
+	copy(fgroups, artists)
+
 	filtersData, err := filter.PrepareFilterData(artists)
 	if err != nil {
 		slog.Debug("Error prepare filter data")
 	}
 	// prepare filter date
 	mdata := entity.MainData{ // container structure
-		Artists:     artists,
+		Artists:     fgroups,
 		FiltersData: *filtersData, // *Pointer, zero value > nil
 
 		// &value = *Pointer = addres of the RAM // reference || *Pointer = Ox1f3f5d56fd

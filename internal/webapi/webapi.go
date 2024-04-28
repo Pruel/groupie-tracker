@@ -255,7 +255,7 @@ func (c *Client) GetAllUniqueLocations() ([]string, error) {
 	for _, locElem := range locations.Index {
 		for _, loc := range locElem.Locations {
 			// parseLocations
-			loc = parseAndFormatLocations(loc)
+			loc = ParseAndFormatLocations(loc)
 			if _, exists := mapLoc[loc]; !exists {
 				mapLoc[loc] = loc
 				uniqueLocs = append(uniqueLocs, loc)
@@ -267,7 +267,7 @@ func (c *Client) GetAllUniqueLocations() ([]string, error) {
 }
 
 // parseLocations
-func parseAndFormatLocations(loc string) string {
+func ParseAndFormatLocations(loc string) string {
 	loc = strings.ReplaceAll(loc, "-", ", ") // Берёт всю строку и первый аргумент наш целевой таргет что будет менять, второй аргумент на что меняем
 	loc = strings.ReplaceAll(loc, "_", " ")  // some_cool_developer // А
 	loc = strings.Title(loc)

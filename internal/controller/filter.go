@@ -2,15 +2,16 @@ package controller
 
 import (
 	"fmt"
-	"groupie-tracker/internal/entity"
-	"groupie-tracker/internal/filter"
-	"groupie-tracker/internal/webapi"
 	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
 	"text/template"
 	"time"
+
+	"groupie-tracker/internal/entity"
+	"groupie-tracker/internal/filter"
+	"groupie-tracker/internal/webapi"
 )
 
 // FilterController
@@ -25,8 +26,6 @@ func FilterController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fArtists := artists
-
 	fltData, err := filter.PrepareFilterData(artists)
 	if err != nil {
 		slog.Error(err.Error())
@@ -38,35 +37,24 @@ func FilterController(w http.ResponseWriter, r *http.Request) {
 		FiltersData: *fltData,
 	}
 
-	if r.Method == http.MethodPost {
-		fmt.Println("POST METHOD")
-		// readValidateAndSaveFilterData вызываем функцию
-		readValidateAndSaveFilterData(r, fltData)
-
-		// filter
-		filteredArtists := Filter(fltData, artists)
-		mdata.Artists = filteredArtists
-
-		fmt.Printf("\n\n2. after recieve data from front-end, filtersData: %+v\n\n", fltData)
-
-		err := tmp.Execute(w, mdata)
-		if err != nil {
-			slog.Debug("request method is get")
-			return
-		}
+	if r.Method != http.MethodPost {
+		slog.Error("Method not allowed!")
+		ErrorController(w, r)
 		return
 	}
 
-	// filteredArtists = Filter
+	fmt.Println("POST METHOD")
 
-	// filteredArtists > tmp > execute
+	// readValidateAndSaveFilterData вызываем функцию
+	readValidateAndSaveFilterData(r, fltData)
 
-	// http.Redirect(w, r, "/")
-	mdata.Artists = fArtists
+	// filter
+	filteredArtists := Filter(fltData, artists)
+	mdata.Artists = filteredArtists
 
-	fmt.Println("GET METHOD")
-	err = tmp.Execute(w, mdata)
-	if err != nil {
+	fmt.Printf("\n\n2. after recieve data from front-end, filtersData: %+v\n\n", fltData)
+
+	if err := tmp.Execute(w, mdata); err != nil {
 		slog.Error(err.Error())
 		return
 	}
@@ -90,10 +78,23 @@ func readValidateAndSaveFilterData(r *http.Request, flt *entity.Filters) {
 }
 
 func readRequest(r *http.Request) (flt entity.Filters) {
-	r.ParseForm() // Connected with frontend, можно и без парсинга получать запрос от юзера, но базово можем использовать это
+	// Connected with frontend, можно и без парсинга получать запрос от юзера, но базово можем использовать это
+	if err := r.ParseForm(); err != nil {
+		slog.Error(err.Error())
+	}
 
 	// Указываем что хотим получить, смотрим на атрибуты "for" and "name"
-	LastCreationDate := r.FormValue("creationDate")
+	FirstCreationDate := r.FormValue("FromCreationDate")
+
+	if FirstCreationDate != "" {
+		res, err := strconv.Atoi(FirstCreationDate)
+		if err != nil {
+			slog.Error(err.Error()) // fix
+		}
+		flt.FirstCreationDate = res
+	}
+
+	LastCreationDate := r.FormValue("ToCreationDate")
 
 	if LastCreationDate != "" {
 		res, err := strconv.Atoi(LastCreationDate)
@@ -103,13 +104,27 @@ func readRequest(r *http.Request) (flt entity.Filters) {
 		flt.LastCreationDate = res
 	}
 
-	HighestFirstAlbum := r.FormValue("firstAlbumDate")
+	// done
 
-	if HighestFirstAlbum != "" {
-		flt.HighestFirstAlbum = HighestFirstAlbum
+	LowestFirstAlbum := r.FormValue("FromFirstAlbumDate")
+
+	if LowestFirstAlbum != "" {
+		date, err := time.Parse(time.DateOnly, LowestFirstAlbum)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+		flt.LowestFirstAlbum = date
 	}
 
-	fmt.Println("Current date:", flt.HighestFirstAlbum) // 1999-05-05
+	HighestFirstAlbum := r.FormValue("ToFirstAlbumDate")
+
+	if HighestFirstAlbum != "" {
+		date, err := time.Parse(time.DateOnly, HighestFirstAlbum)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+		flt.HighestFirstAlbum = date
+	}
 
 	Locations := r.FormValue("locations")
 	locs := make([]string, 0, 1)
@@ -140,25 +155,15 @@ func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
 	minYear := 1899
 	minMember := 1
 	maxMember := 8
-	timeFormat := "2006-01-02"
-
-	//time.Parse
-	// highestFirstAlbum = hAlbum
-	fmt.Println("Date from frontend:", fltData.HighestFirstAlbum)
-	hAlbum, err := time.Parse(timeFormat, fltData.HighestFirstAlbum)
-	if err != nil {
-		slog.Error(err.Error()) // bug
-	}
-
-	fmt.Println("TIME into validation func: ", hAlbum)
 
 	if fltData.LastCreationDate >= minYear && fltData.LastCreationDate <= time.Now().Year() {
-		flt.LastCreationDate = fltData.LastCreationDate //
-
+		flt.FirstCreationDate = fltData.FirstCreationDate //
+		flt.LastCreationDate = fltData.LastCreationDate   //
 	}
 
 	// II. firstAlbumDate >= minYear 1899 && firstAlbumDate <= time.Now().Year()
-	if hAlbum.Year() >= minYear && hAlbum.Year() <= time.Now().Year() {
+	if fltData.LowestFirstAlbum.Year() >= minYear && fltData.HighestFirstAlbum.Year() <= time.Now().Year() {
+		flt.LowestFirstAlbum = fltData.LowestFirstAlbum
 		flt.HighestFirstAlbum = fltData.HighestFirstAlbum
 	}
 
@@ -169,7 +174,10 @@ func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
 			memBuf = append(memBuf, num)
 		}
 	}
-	flt.Members = memBuf
+
+	if len(memBuf) != 0 {
+		flt.Members = memBuf
+	}
 
 	// "city-country" O(n)
 	// IV. Location || location != "" &&
@@ -177,104 +185,68 @@ func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
 	// if len(sliceStr) == 2 { add }
 
 	locs := make([]string, 0, 1)
-	if fltData.Locations[0] != "" {
+	if len(fltData.Locations) != 0 && fltData.Locations[0] != "" {
 		strSlice := strings.Split(fltData.Locations[0], ",")
 		if len(strSlice) == 2 {
 			locs = append(locs, fltData.Locations[0])
 		}
 	}
+
 	flt.Locations = locs
 }
 
-// Filter ..
-
-// 1. match boolean flog = true
-
-// I. creation date
-
-// II. album publish date
-
-// III.  members number
-
-// IV. locations
-
-// if match do append in a new filteredArtists
-
-// return this new slice
-func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArtists []entity.Artist) {
-	match := false
-
-	// I. creation date
+// Filter
+func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.Artist) {
 	for _, group := range artists {
+		match := false
+		// I. creation date
 		if group.CreationDate >= flt.FirstCreationDate && group.CreationDate <= flt.LastCreationDate {
 			match = true
+			fmt.Println("MATCH BY CREATION DATE")
 		}
 
 		// II. album publish
-
-		if convStrToTime(group.FirstAlbum, "GFA") >= convStrToTime(flt.LowestFirstAlbum, "LFA") && convStrToTime(group.FirstAlbum, "GFA") <= convStrToTime(flt.HighestFirstAlbum, "HFA") { // bug
+		if convStrToTime(group.FirstAlbum) >= flt.LowestFirstAlbum.Year() && convStrToTime(group.FirstAlbum) <= flt.HighestFirstAlbum.Year() {
 			match = true
+			fmt.Println("MATCH BY FIRST ALBUM")
 		}
 
-		// III.  members number
-		for _, num := range flt.Members {
-			if len(group.Members) == num {
+		// III. members number
+		for _, memNum := range flt.Members {
+			if memNum == len(group.Members) {
 				match = true
+				fmt.Println("MATCH BY MEMBERS NUM")
+				break
+
+			}
+			match = false
+		}
+
+		// IV. location
+		bufLocs, _ := webapi.New().GetLocationsByURL(group.Locations)
+		for _, loc := range bufLocs.Locations {
+			loc = webapi.ParseAndFormatLocations(loc)
+			if flt.Locations[0] == loc {
+				match = true
+				fmt.Println("MATCH BY LOC")
 				break
 			}
 			match = false
 		}
 
-		// IV. locations group []string{}
-
-		gLocs, err := webapi.New().GetLocationsByURL(group.Locations)
-		if err != nil {
-			slog.Error(err.Error())
-			continue
-		}
-
-		for _, loc := range gLocs.Locations { // []string{"Some location", "Location"}
-			if strings.Contains(flt.Locations[0], loc) {
-				match = true
-				break // operator || continue, break,
-			}
-			match = false
-
-		}
-
-		// if match do append in a new filteredArtists
 		if match {
-			filteredArtists = append(filteredArtists, group)
+			filteredArt = append(filteredArt, group)
 		}
-
 	}
 
-	return filteredArtists
+	return filteredArt
 }
 
 // convStrToTime, return time.Time.Year
-func convStrToTime(strDate string, flag string) int { // BUGG time format
-	if flag == "" {
-		return 0
-	}
-	// timeFormat := "2006-01-02" // "02 October 2005 10:10:10" time.UnixDate, time.ANSIC
+func convStrToTime(strDate string) int {
+	timeFormat := "02-01-2006" // "02 October 2005 10:10:10" time.UnixDate, time.ANSIC
 
-	var date time.Time
-	var err error
-	// flt.LowestFirstAlbum // = 01-05-2024
-	// flt.HighestFirstAlbum // = 2024-05-01
-	// group.FirstAlbum
-
-	switch flag { // GFA  = (group first album), flt.LowestFA = LFA, flt.HighestFA = HFA
-	case "GFA":
-		date, err = time.Parse(time.DateOnly, strDate) // group.FirstAlbum // 15-02-2024
-	case "LFA":
-		date, err = time.Parse(time.DateOnly, strDate) // group.FirstAlbum // 15-02-2024
-	case "HFA":
-		timeFormat := "2006-01-02"
-		date, err = time.Parse(timeFormat, strDate) // group.FirstAlbum // 15-02-2024
-	}
-
+	date, err := time.Parse(timeFormat, strDate) // group.FirstAlbum // 15-02-2024
 	if err != nil {
 		slog.Error(err.Error())
 	}

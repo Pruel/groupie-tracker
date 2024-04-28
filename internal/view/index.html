@@ -12,38 +12,51 @@
 
     <form action="/filter" method="POST" class="filter-form">
         <div class="filter-container">
-            <label for="creationDate">Career Starting Year:</label>
-            <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.FirstCreationDate}}" name="creationDate" id="creationDate">
-            <!-- <span id="dateValue">{{.FiltersData.FirstCreationDate}}</span>  -->
-        </div>
+            <label for="FromCreationDate" style="color: white;">From Career Starting Year:</label>
+            <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.FirstCreationDate}}" name="FromCreationDate" id="creationDate">
+            <span id="dateValue" style="color: white;">{{.FiltersData.FirstCreationDate}}</span> 
+        </div><br>
 
         <div class="filter-container">
-            <label for="firstAlbumDate">First Album Year:</label>
-            <input type="date" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.LowestFirstAlbum}}" name="firstAlbumDate" id="firstAlbumDate">
-            <!-- <span id="dateValue">{{.FiltersData.LowestFirstAlbum}}</span>  -->
-        </div>
+            <label for="ToCreationDate" style="color: white;"> To Career Starting Year:</label>
+            <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.LastCreationDate}}" name="ToCreationDate" id="ToCreationDate">
+            <span id="ToDateValue" style="color: white;">{{.FiltersData.LastCreationDate}}</span> 
+        </div><br>
+
+
 
         <div class="filter-container">
-            <label>Number of Members:</label>
+            <label for="FromFirstAlbumDate" style="color: white;">First Album Year:</label>
+            <input type="date" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.LowestFirstAlbum}}" name="FromFirstAlbumDate" id="firstAlbumDate">
+        </div><br>
+
+        <div class="filter-container">
+            <label for="ToFirstAlbumDate" style="color: white;">First Album Year:</label>
+            <input type="date" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.HighestFirstAlbum}}" name="ToFirstAlbumDate" id="firstAlbumDate">
+        </div><br>
+
+        <div class="filter-container">
+            <label style="color: white;">Number of Members:</label>
             <div>
                 {{range .FiltersData.Members}} 
                 <!-- Adjust the value and names as needed -->
                 <input type="checkbox" id="members{{.}}" name="members{{.}}" value="{{.}}">
-                <label for="members{{.}}">{{.}}</label>
+                <label for="members{{.}}" style="color: white;">{{.}}</label>
                 {{end}}
             </div>
-        </div>        
+        </div>
 
         <div class="filter-container"> 
-            <h3>Locations:</h3>
+            <h3 style="color: white;">Locations:</h3>
             <select name="locations">
                 {{ range .FiltersData.Locations}}
                 <option value="{{.}}">{{.}}</option>
                 {{end}}
             </select>
-        </div>
+        </div><br>
 
         <button type="submit">Apply Filters</button>
+        <br><br>
     </form>
 
     <main class="index">
@@ -62,6 +75,10 @@
     <script>
         document.getElementById('creationDate').oninput = function() {
             document.getElementById('dateValue').textContent = this.value;
+        }
+
+        document.getElementById('ToCreationDate').oninput = function() {
+            document.getElementById('ToDateValue').textContent = this.value;
         }
     </script>
 
