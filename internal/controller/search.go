@@ -63,7 +63,7 @@ func getSearchValue(r *http.Request) (searchValue string, err error) {
 // Search(searchValue string, artists []entity.Artists), search by group name, and return found groups = foundGroups []entity.Artists
 func Search(searchValue string, artist []entity.Artist) []entity.Artist {
 	var foundGroups []entity.Artist
-    
+
 	if artist != nil {
 		for _, group := range artist {
 			if strings.Contains(group.Name, searchValue) {
