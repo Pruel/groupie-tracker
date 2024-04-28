@@ -4,9 +4,9 @@
         "host": "localhost",
         "port": "8080",
         "idle_timeout": 30,
-        "write_timeout": 10,
-        "read_timeout": 10,
-        "max_header_mb": 3
+        "write_timeout": 30,
+        "read_timeout": 30,
+        "max_header_mb": 10
     },
     "http_client": {
         "timeout": 15

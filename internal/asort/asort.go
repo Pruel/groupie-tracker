@@ -1,9 +1,10 @@
 package asort // sort
 
 import (
-	"groupie-tracker/internal/entity"
 	"time"
 	// "sort"
+
+	"groupie-tracker/internal/entity"
 )
 
 type SArtists []entity.Artist
@@ -27,7 +28,7 @@ func (a SArtists) Swap(i, j int) {
 
 // Less
 func (a SArtists) Less(i, j int) bool {
-	dateFormat := "01-01-1970"
+	dateFormat := "01-02-2006"
 
 	// first album date
 	falbDate, _ := time.Parse(dateFormat, a[i].FirstAlbum)
