@@ -53,7 +53,7 @@ func MainController(w http.ResponseWriter, r *http.Request) {
 	client := webapi.New()
 	artists, err := client.GetAllArtists()
 	if err != nil {
-		slog.Error(err.Error()) // like this
+		slog.Error(err.Error()) 
 	}
 
 	filtersData, err := filter.PrepareFilterData(artists)

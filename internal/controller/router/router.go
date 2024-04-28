@@ -31,6 +31,7 @@ func (r *Router) InitRouter() error {
 	r.Mux.HandleFunc("/", controller.FilterController)       //
 	r.Mux.HandleFunc("/filter", controller.FilterController) //
 	r.Mux.HandleFunc("/artist", controller.ArtistController) //
+	r.Mux.HandleFunc("/search", controller.SearchController) 
 
 	slog.Debug("the ServeMux router successful initialized")
 
