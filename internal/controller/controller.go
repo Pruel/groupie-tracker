@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	indexTmpl  = "/internal/view/index.html"
+	indexTmpl  = "/internal/view/main.html"
 	artistTmpl = "/internal/view/artist.html"
 	errorTmpl  = "/internal/view/error.html"
 	viewDir    = "/internal/view/"
@@ -26,7 +26,7 @@ func GetTmplFilepath(tmplName string) (tmplFilepath string) {
 	}
 
 	switch tmplName {
-	case "index.html", "index":
+	case "main.html", "main":
 		tmplFilepath = wd + indexTmpl
 	case "artist.html", "artist":
 		tmplFilepath = wd + artistTmpl
@@ -41,7 +41,7 @@ func GetTmplFilepath(tmplName string) (tmplFilepath string) {
 
 func MainController(w http.ResponseWriter, r *http.Request) {
 	// parsing a template
-	tmp := template.Must(template.ParseFiles(GetTmplFilepath("index.html")))
+	tmp := template.Must(template.ParseFiles(GetTmplFilepath("main.html")))
 	// error handling
 	if r.URL.Path != "/" {
 		ErrorController(w, r)

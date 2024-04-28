@@ -11,7 +11,7 @@ import (
 
 func SearchController(w http.ResponseWriter, r *http.Request) {
 	// Парсим шаблончес
-	tmp := template.Must(template.ParseFiles(GetTmplFilepath("index.html")))
+	tmp := template.Must(template.ParseFiles(GetTmplFilepath("main.html")))
 
 	artists, err := webapi.New().GetAllArtists()
 	if err != nil {

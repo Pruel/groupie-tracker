@@ -16,7 +16,7 @@ import (
 
 // FilterController
 func FilterController(w http.ResponseWriter, r *http.Request) {
-	tmp := template.Must(template.ParseFiles(GetTmplFilepath("index.html")))
+	tmp := template.Must(template.ParseFiles(GetTmplFilepath("main.html")))
 
 	// read request body and save filter params in some structure
 
