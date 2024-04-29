@@ -25,7 +25,7 @@ func (r *Router) InitRouter() error {
 
 	r.Mux.Handle("/view/", http.StripPrefix("/view/", http.FileServer(http.Dir("view"))))
 	r.Mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/view/static"))))
-	r.Mux.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("web/screenshot"))))
+	r.Mux.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("internal/view/images"))))
 
 	// r.Mux.Handle("/view/", http.StripPrefix("/view/", http.FileServer(http.Dir(controller.GetTmplFilepath("view")))))
 	r.Mux.HandleFunc("/", controller.MainController)         //
