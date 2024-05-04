@@ -69,7 +69,6 @@
 </header>
 
     <main class="index">
-        <!-- Your artists cards go here -->
         {{range .Artists}}
         <a href="/artist?artistID={{.ID}}">
             <div class="artist-card">
@@ -86,7 +85,6 @@
         document.getElementById('creationDate').oninput = function() {
             document.getElementById('dateValue').textContent = this.value;
         }
-
         document.getElementById('ToCreationDate').oninput = function() {
             document.getElementById('ToDateValue').textContent = this.value;
         }

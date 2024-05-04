@@ -11,78 +11,80 @@
 </head>
 <body>
     <header>
-        <h1>Groupie-tracker</h1>
-    
-        <form action="/search" method="POST">
-            <input type="text" name="search" placeholder="Search..">
-            <button type="submit">Search</button>
+        <h1 class="header__title">Groupie-tracker</h1>
+        
+        <form action="/search" method="POST" class="header__search">
+            <img src="static/image/loupe.png" alt="Search Icon" class="search-icon">
+            <input type="search" placeholder="Search" name="search">
         </form>
     
+        <div class="header__filter">
         <form action="/filter" method="POST" class="filter-form">
-            <div class="filter-container">
-                <label for="FromCreationDate" style="color: white;">From Career Starting Year:</label>
-                <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.FirstCreationDate}}" name="FromCreationDate" id="creationDate">
-                <span id="dateValue" style="color: white;">{{.FiltersData.FirstCreationDate}}</span> 
-            </div><br>
-    
-            <div class="filter-container">
-                <label for="ToCreationDate" style="color: white;"> To Career Starting Year:</label>
-                <input type="range" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" value="{{.FiltersData.LastCreationDate}}" name="ToCreationDate" id="ToCreationDate">
-                <span id="ToDateValue" style="color: white;">{{.FiltersData.LastCreationDate}}</span> 
-            </div><br>
-    
-    
-    
-            <div class="filter-container">
-                <label for="FromFirstAlbumDate" style="color: white;">First Album Year:</label>
-                <input type="date" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.LowestFirstAlbum}}" name="FromFirstAlbumDate" id="firstAlbumDate">
-            </div><br>
-    
-            <div class="filter-container">
-                <label for="ToFirstAlbumDate" style="color: white;">First Album Year:</label>
-                <input type="date" min="{{.FiltersData.LowestFirstAlbum}}" max="{{.FiltersData.HighestFirstAlbum}}" value="{{.FiltersData.HighestFirstAlbum}}" name="ToFirstAlbumDate" id="firstAlbumDate">
-            </div><br>
-    
-            <div class="filter-container">
-                <label style="color: white;">Number of Members:</label>
-                <div>
-                    {{range .FiltersData.Members}} 
-                    <!-- Adjust the value and names as needed -->
-                    <input type="checkbox" id="members{{.}}" name="members{{.}}" value="{{.}}">
-                    <label for="members{{.}}" style="color: white;">{{.}}</label>
-                    {{end}}
+            <div class="filter-sliders-container">
+                <div class="filter__date_creation">
+                    <label for="FromCreationDate">Date of group creation:</label>
+                    <input type="number" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" name="FromCreationDate" id="creationDate">
                 </div>
+            
+                <div class="filter__first_album_release">
+                    <label for="ToCreationDate">First album release:</label>
+                    <input type="number" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" name="ToCreationDate" id="ToCreationDate">
+                </div>
+            </div>  
+    
+            <div class="filter__members">
+                <label>Number of Members:</label>
+                    {{range .FiltersData.Members}} 
+                    <input type="checkbox" id="members{{.}}" name="members{{.}}" value="{{.}}">
+                    <label for="members{{.}}">{{.}}</label>
+                    {{end}}
             </div>
     
-            <div class="filter-container"> 
-                <h3 style="color: white;">Locations:</h3>
+            <div class="filter__locations"> 
+                <h3>Locations:</h3>
                 <select name="locations">
                     {{ range .FiltersData.Locations}}
                     <option value="{{.}}">{{.}}</option>
                     {{end}}
                 </select>
             </div><br>
-    
-            <button type="submit">Apply Filters</button>
+            <button class="filter__button" type="submit">Apply Filters</button>
             <br><br>
+        </div>
         </form>
     </header>
-    
-        <main class="index">
-            <!-- Your artists cards go here -->
-            {{range .Artists}}
-            <a href="/artist?artistID={{.ID}}">
-                <div class="artist-card">
-                    <img src="{{.Image}}" alt="{{.Name}}">
-                    <div>
-                        <p>{{.Name}}</p>
-                    </div>
+
+    <main>
+        {{range .Artists}}
+        <a href="/artist?artistID={{.ID}}">
+            <div class="artist__card">
+                <img src="{{.Image}}" alt="{{.Name}}">
+                <div>
+                    <p>{{.Name}}</p>
                 </div>
-            </a>
-            {{end}}
-        </main>
-    
+            </div>
+        </a>
+        {{end}}
+    </main>
+    <script>
+        document.querySelectorAll('.filter__members input[type="checkbox"]').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        // Снимаем выделение со всех чекбоксов
+        document.querySelectorAll('.filter__members input[type="checkbox"]').forEach(function(otherCheckbox) {
+            if (otherCheckbox !== checkbox) {
+                otherCheckbox.checked = false;
+            }
+        });
+    });
+});
+document.querySelectorAll('.filter__members input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        if (!checkbox.checked) {  // Если чекбокс был снят
+            checkbox.blur();  // Снимаем фокус с элемента
+        }
+    });
+});
 
-
+    </script>
 </body>
 </html>
