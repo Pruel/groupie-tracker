@@ -35,8 +35,8 @@
             <div class="filter__members">
                 <label>Number of Members:</label>
                     {{range .FiltersData.Members}} 
-                    <input type="checkbox" id="members{{.}}" name="members{{.}}" value="{{.}}">
                     <label for="members{{.}}">{{.}}</label>
+                    <input type="checkbox" id="members{{.}}" name="members{{.}}" value="{{.}}">
                     {{end}}
             </div>
     
