@@ -86,3 +86,12 @@ func Search(searchValue string, artist []entity.Artist) []entity.Artist {
 	//  after return foundGroups
 
 }
+
+// full text seatch by types and params
+// 0. front-end -> input with datalist
+
+// 1. getUniqueSuggestions
+
+// 2. recieving data search request from front end and validate this data ||search-> New-York - locations
+
+// 3. search by any field (type) of the groups

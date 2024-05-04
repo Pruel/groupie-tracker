@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	indexTmpl  = "/internal/view/main.html"
+	indexTmpl  = "/internal/view/index.html"
+	mainTmpl   = "/internal/view/main.html"
 	artistTmpl = "/internal/view/artist.html"
 	errorTmpl  = "/internal/view/error.html"
 	viewDir    = "/internal/view/"
@@ -27,11 +28,13 @@ func GetTmplFilepath(tmplName string) (tmplFilepath string) {
 
 	switch tmplName {
 	case "main.html", "main":
-		tmplFilepath = wd + indexTmpl
+		tmplFilepath = wd + mainTmpl
 	case "artist.html", "artist":
 		tmplFilepath = wd + artistTmpl
 	case "error.html", "error":
 		tmplFilepath = wd + errorTmpl
+	case "index.html", "index":
+		tmplFilepath = wd + indexTmpl
 	default:
 		tmplFilepath = wd + viewDir
 	}

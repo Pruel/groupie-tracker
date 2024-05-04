@@ -269,7 +269,7 @@ func (c *Client) GetAllUniqueLocations() ([]string, error) {
 // parseLocations
 func ParseAndFormatLocations(loc string) string {
 	loc = strings.ReplaceAll(loc, "-", ", ") // Берёт всю строку и первый аргумент наш целевой таргет что будет менять, второй аргумент на что меняем
-	loc = strings.ReplaceAll(loc, "_", " ")  // some_cool_developer // А
+	loc = strings.ReplaceAll(loc, "_", " ")  // some_cool_developer
 	loc = strings.Title(loc)
 
 	return loc

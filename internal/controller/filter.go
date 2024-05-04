@@ -197,29 +197,32 @@ func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
 
 // Filter
 func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.Artist) {
+
 	for _, group := range artists {
-		match := false
+		matchloc := false   //location
+		matchcd := false    // creation date
+		matchmn := false    // members number
+		matchalbum := false // first album
+
 		// I. creation date
 		if group.CreationDate >= flt.FirstCreationDate && group.CreationDate <= flt.LastCreationDate {
-			match = true
-			fmt.Println("MATCH BY CREATION DATE")
+			matchcd = true
+			fmt.Println("mathc by some params")
 		}
 
 		// II. album publish
 		if convStrToTime(group.FirstAlbum) >= flt.LowestFirstAlbum.Year() && convStrToTime(group.FirstAlbum) <= flt.HighestFirstAlbum.Year() {
-			match = true
-			fmt.Println("MATCH BY FIRST ALBUM")
+			matchalbum = true
 		}
 
 		// III. members number
 		for _, memNum := range flt.Members {
 			if memNum == len(group.Members) {
-				match = true
-				fmt.Println("MATCH BY MEMBERS NUM")
+				matchmn = true
 				break
 
 			}
-			match = false
+			matchmn = false
 		}
 
 		// IV. location
@@ -227,14 +230,13 @@ func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.
 		for _, loc := range bufLocs.Locations {
 			loc = webapi.ParseAndFormatLocations(loc)
 			if flt.Locations[0] == loc {
-				match = true
-				fmt.Println("MATCH BY LOC")
+				matchloc = true
 				break
 			}
-			match = false
+			matchloc = false
 		}
 
-		if match {
+		if (matchcd || matchalbum) || (matchmn || matchloc) { //if anyone is true, it's ok -> and= 1. true || true, 2. false || true
 			filteredArt = append(filteredArt, group)
 		}
 	}
