@@ -24,8 +24,8 @@
         </form>
     
         <div class="header__filter">
-        <form action="/filter" method="POST" class="filter-form">
-            <div class="filter-sliders-container">
+        <form action="/filter" method="POST">
+            <div class="filter__container">
                 <div class="filter__date_creation">
                     <label for="FromCreationDate">Date of group creation:</label>
                     <input type="number" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" name="FromCreationDate" id="creationDate">
@@ -53,7 +53,9 @@
                     {{end}}
                 </select>
             </div>
-            <button class="filter__button" type="submit">Apply Filters</button>
+            <div class="header__button">
+                <button class="filter__button" type="submit">Apply Filters</button>
+            </div>
         </div>
         </form>
     </header>
@@ -85,6 +87,12 @@ document.querySelectorAll('.filter__members input[type="checkbox"]').forEach(che
         if (!checkbox.checked) {  
             checkbox.blur(); 
         }
+    });
+});
+const selectElements = document.querySelectorAll('.filter__locations select');
+selectElements.forEach(select => {
+    select.addEventListener('change', () => {
+        select.blur();  
     });
 });
     </script>

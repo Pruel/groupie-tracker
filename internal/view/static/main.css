@@ -1,15 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Raleway&display=swap');
 
-html {
-    height: 100%;
-}
-
 body {
     margin: 0;
     padding: 0;
     min-height: 100%;
     font-family: 'Playfair Display', serif;
-    font-size: 20px;
+    font-size: 23px;
     font-weight: 400;
     background-color: #0a0a0a;
     background-attachment: fixed;
@@ -27,7 +23,7 @@ header {
     
 }
 .header__title {
-    padding-top: 5%;
+    padding-top: 2%;
     margin: 0;
     font-size: 70px;
 }
@@ -74,7 +70,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
 
 /* HEADER DATE AND RELEASE */
-.filter-sliders-container {
+.filter__container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -84,7 +80,7 @@ input[type="search"]::-webkit-search-cancel-button {
 .filter__album_release {
     display: flex;
     align-items: center;
-    
+    margin-right: 20px;
 }
 .filter__date_creation label,
 .filter__album_release label {
@@ -108,11 +104,6 @@ input[type="search"]::-webkit-search-cancel-button {
 .filter__album_release input[type="number"]:hover {
     background-color: rgba(59, 58, 58, 0.444);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
-}
-.filter__date_creation label:hover + input[type="number"],
-.filter__album_release label:hover + input[type="number"] {
-    background-color: rgba(0, 0, 0, 0.085); 
-    box-shadow: none; 
 }
 
 
@@ -210,7 +201,14 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 
-
+/* HEADER BUTTON */
+.header__button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; 
+    margin-top: 20px; 
+}
 .filter__button {
     padding: 10px 20px;
     background-color: #008CBA; /* Синяя кнопка */
@@ -219,7 +217,6 @@ input[type="search"]::-webkit-search-cancel-button {
     border-radius: 5px;
     cursor: pointer;
 }
-
 .filter__button:hover {
     background-color: #007ba7; /* Темнее при наведении */
 }
@@ -228,44 +225,54 @@ input[type="search"]::-webkit-search-cancel-button {
 
 
 /* MAIN */
-
-.index {
+main {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 0px 80px 0px 80px;
     gap: 80px;
+    margin: 50px 80px;
 }
-.artist-card {
+
+.artist__card {
     background-color: #303030;
     border-radius: 10px;
     color: white;
     height: 240px;
-    font-family: 'Raleway', sans-serif;
-    font-size: 14px;
-}
-.artist-card img {
-    border-radius: 10px 10px 0 0;
-    width: 200px;
-    filter: grayscale(100%) opacity(0.65);
-    transition: filter 0.3s ease, opacity 0.3s ease;
-}
-.artist-card:hover img {
-    filter: grayscale(0%) opacity(1);
-}
-.artist-card div {
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    padding-top: 9px;
-}
-.artist {
+    width: 200px; 
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, filter 0.3s ease-in-out;
+    cursor: pointer;
+    filter: grayscale(100%);
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 80px;
-    width: 60%;
-    color: white;
+    justify-content: space-between; 
+    font-size: 18px;
 }
 
+.artist__card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.75);
+    filter: grayscale(0%);
+}
+
+.artist__card img {
+    width: 100%; 
+    border-radius: 10px 10px 0 0;
+    height: auto; 
+}
+
+.artist__card div {
+    text-align: center; 
+    padding: 10px 0; 
+    flex-grow: 1; 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+}
+
+.artist__card p {
+    margin: 0; 
+    font-size: 18px; 
+}
 /* END MAIN CONTENT */
