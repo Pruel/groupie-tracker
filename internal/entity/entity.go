@@ -52,6 +52,7 @@ type RelationsIndex struct {
 type MainData struct {
 	Artists     []Artist
 	FiltersData Filters
+	SearchData  SearchData
 }
 
 type Filters struct {
@@ -62,3 +63,5 @@ type Filters struct {
 	Members           []int
 	Locations         []string
 }
+
+type SearchData map[string]string

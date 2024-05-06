@@ -81,18 +81,18 @@ input[type="search"]::-webkit-search-cancel-button {
     margin: 20px 0;
 }
 .filter__date_creation,
-.filter__first_album_release {
+.filter__album_release {
     display: flex;
     align-items: center;
     
 }
 .filter__date_creation label,
-.filter__first_album_release label {
-    margin-right: 10px; /* Расстояние между меткой и полем ввода */
-    white-space: nowrap; /* Убедиться, что текст метки не переносится */
+.filter__album_release label {
+    margin-right: 10px; 
+    white-space: nowrap; 
 }
 .filter__date_creation input[type="number"],
-.filter__first_album_release input[type="number"] {
+.filter__album_release input[type="number"] {
     width: auto;
     padding: 10px;
     border: 1px solid #444; 
@@ -103,18 +103,16 @@ input[type="search"]::-webkit-search-cancel-button {
     transition: all 0.2s ease-in-out; 
 }
 .filter__date_creation input[type="number"]:focus,
-.filter__first_album_release input[type="number"]:focus,
+.filter__album_release input[type="number"]:focus,
 .filter__date_creation input[type="number"]:hover,
-.filter__first_album_release input[type="number"]:hover {
+.filter__album_release input[type="number"]:hover {
     background-color: rgba(59, 58, 58, 0.444);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
 }
-
-/* Отмена стилей для input при наведении на метку */
 .filter__date_creation label:hover + input[type="number"],
-.filter__first_album_release label:hover + input[type="number"] {
-    background-color: rgba(0, 0, 0, 0.085); /* Возвращаем исходный фон */
-    box-shadow: none; /* Убираем тень */
+.filter__album_release label:hover + input[type="number"] {
+    background-color: rgba(0, 0, 0, 0.085); 
+    box-shadow: none; 
 }
 
 
@@ -126,14 +124,11 @@ input[type="search"]::-webkit-search-cancel-button {
     gap: 10px;
     
 }
-/* .filter__members label {
-    cursor: pointer; 
-} */
 .filter__members input[type="checkbox"] {
     appearance: none; 
     background-color: rgba(0, 0, 0, 0.085); 
-    width: 20px; /* Ширина */
-    height: 20px; /* Высота */
+    width: 20px; 
+    height: 20px; 
     border: 1px solid #444;  
     border-radius: 50%; 
     position: relative;
@@ -157,63 +152,61 @@ input[type="search"]::-webkit-search-cancel-button {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
     
 }
-/* Отмена стилей для чекбокса при наведении на метку */
 .filter__members label:hover + input[type="checkbox"] {
-    background-color: rgba(0, 0, 0, 0.085); /* возвращаем исходный фон */
-    box-shadow: none; /* убираем тень */
+    background-color: rgba(0, 0, 0, 0.085); 
+    box-shadow: none; 
 }
-
 
 
 /* HEADER LOCATIONS */
-.filter__locations h3 {
-    margin-bottom: 5px; /* Отступ до списка */
+.filter__locations {
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
 }
-/* Стилизация скроллбара для Webkit браузеров */
+.filter__locations h3 {
+    white-space: nowrap;
+}
 .filter__locations select {
-    overflow-y: auto; /* Позволяет скроллу активироваться, когда это необходимо */
+    width: auto; 
+    flex-grow: 1;
 }
 .filter__locations select::-webkit-scrollbar {
-    width: 12px; /* Ширина скроллбара */
+    width: 12px; 
 }
 .filter__locations select::-webkit-scrollbar-track {
-    background: #333; /* Цвет дорожки скроллбара */
+    background: #333; 
 }
 .filter__locations select::-webkit-scrollbar-thumb {
-    background-color: #444; /* Цвет самого скроллера */
-    border-radius: 10px; /* Скругленные углы скроллера */
-    border: 2px solid #333; /* Граница дорожки скроллбара */
+    background-color: #444;
+    border-radius: 10px; 
+    border: 2px solid #333; 
 }
 .filter__locations select:hover,
 .filter__locations select:focus {
-    border-color: #ffffff86; /* Синий цвет рамки при наведении или фокусе */
-    box-shadow: 0 0 8px rgba(191, 191, 191, 0.688); /* Слабое свечение */
+    border-color: #ffffff86; 
+    box-shadow: 0 0 8px rgba(191, 191, 191, 0.688); 
 }
 .filter__locations select {
-    width: 100%; /* Полная ширина контейнера */
-    padding: 10px; /* Паддинг для удобства использования */
+    width: 100%; 
+    padding: 10px; 
     background-color: rgba(0, 0, 0, 0.085); 
-    color: white; /* Цвет текста */
-    border: 1px solid #444; /* Легкая рамка вокруг */
-    border-radius: 5px; /* Скругленные углы */
-    appearance: none; /* Убираем стандартный стиль */
-    cursor: pointer; /* Курсор в виде указателя */
-    outline: none; /* Отключаем контур при фокусе */
+    color: white; 
+    border: 1px solid #444; 
+    border-radius: 5px; 
+    appearance: none; 
+    cursor: pointer; 
+    outline: none; 
 }
-
-/* Стиль для стрелки выпадающего списка */
 .filter__locations select {
     position: relative;
     background-image: url('data:image/svg+xml,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: right 10px center; /* Позиция иконки стрелки */
-    background-size: 16px 16px; /* Размер иконки */
+    background-position: right 10px center; 
+    background-size: 16px 16px; 
 }
-
-
-/* Повышаем удобство чтения элементов в списке */
 .filter__locations option {
-    background-color: #333; /* Темный фон для каждого элемента списка */
+    background-color: #333; 
 }
 
 

@@ -15,7 +15,12 @@
         
         <form action="/search" method="POST" class="header__search">
             <img src="static/image/loupe.png" alt="Search Icon" class="search-icon">
-            <input type="search" placeholder="Search" name="search">
+            <input type="search" placeholder="Search" name="search" id="search">
+            <datalist id="search">
+                {{range $key, $value := .SearchData}} 
+                <option data-key="{{$key}}" value="{{$value}}">{{$value}}</option> 
+                {{end}}
+            </datalist>
         </form>
     
         <div class="header__filter">
@@ -26,7 +31,7 @@
                     <input type="number" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" name="FromCreationDate" id="creationDate">
                 </div>
             
-                <div class="filter__first_album_release">
+                <div class="filter__album_release">
                     <label for="ToCreationDate">First album release:</label>
                     <input type="number" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" name="ToCreationDate" id="ToCreationDate">
                 </div>
@@ -43,13 +48,12 @@
             <div class="filter__locations"> 
                 <h3>Locations:</h3>
                 <select name="locations">
-                    {{ range .FiltersData.Locations}}
+                    {{range .FiltersData.Locations}}
                     <option value="{{.}}">{{.}}</option>
                     {{end}}
                 </select>
-            </div><br>
+            </div>
             <button class="filter__button" type="submit">Apply Filters</button>
-            <br><br>
         </div>
         </form>
     </header>
@@ -69,7 +73,6 @@
     <script>
         document.querySelectorAll('.filter__members input[type="checkbox"]').forEach(function(checkbox) {
     checkbox.addEventListener('change', function() {
-        // Снимаем выделение со всех чекбоксов
         document.querySelectorAll('.filter__members input[type="checkbox"]').forEach(function(otherCheckbox) {
             if (otherCheckbox !== checkbox) {
                 otherCheckbox.checked = false;
@@ -79,12 +82,11 @@
 });
 document.querySelectorAll('.filter__members input[type="checkbox"]').forEach(checkbox => {
     checkbox.addEventListener('change', () => {
-        if (!checkbox.checked) {  // Если чекбокс был снят
-            checkbox.blur();  // Снимаем фокус с элемента
+        if (!checkbox.checked) {  
+            checkbox.blur(); 
         }
     });
 });
-
     </script>
 </body>
 </html>
