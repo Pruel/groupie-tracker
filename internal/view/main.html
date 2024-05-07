@@ -27,13 +27,13 @@
         <form action="/filter" method="POST">
             <div class="filter__container">
                 <div class="filter__date_creation">
-                    <label for="FromCreationDate">Date of group creation:</label>
-                    <input type="number" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" name="FromCreationDate" id="creationDate">
+                    <label for="CreationDate">Date of group creation:</label>
+                    <input type="number" min="1958" max="2021" name="CreationDate" id="CreationDate">
                 </div>
             
                 <div class="filter__album_release">
-                    <label for="ToCreationDate">First album release:</label>
-                    <input type="number" min="{{.FiltersData.FirstCreationDate}}" max="{{.FiltersData.LastCreationDate}}" name="ToCreationDate" id="ToCreationDate">
+                    <label for="FirstRelease">First album release:</label>
+                    <input type="number" min="1962" max="2021" name="FirstRelease" id="FirstRelease">
                 </div>
             </div>  
     

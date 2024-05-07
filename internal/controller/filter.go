@@ -62,9 +62,9 @@ func FilterController(w http.ResponseWriter, r *http.Request) {
 
 func readValidateAndSaveFilterData(r *http.Request, flt *entity.Filters) {
 	// 1. read
-	filter := readRequest(r)
+	filter := readRequest(r, flt) // TODO: fix bug = change pointer to some value type
 	// 2. validate + save
-	validateAndSaveData(flt, filter)
+	validateAndSaveData(flt, *filter)
 	// 3
 
 	// Type Pointer = &ValueOFRAMAddress && Ссылочный тип хранит в себе адрес ячейки памяти
@@ -77,53 +77,32 @@ func readValidateAndSaveFilterData(r *http.Request, flt *entity.Filters) {
 
 }
 
-func readRequest(r *http.Request) (flt entity.Filters) {
+func readRequest(r *http.Request, flt *entity.Filters) *entity.Filters {
 	// Connected with frontend, можно и без парсинга получать запрос от юзера, но базово можем использовать это
 	if err := r.ParseForm(); err != nil {
 		slog.Error(err.Error())
 	}
 
 	// Указываем что хотим получить, смотрим на атрибуты "for" and "name"
-	FirstCreationDate := r.FormValue("FromCreationDate")
+	FirstCreationDate := r.FormValue("CreationDate")
 
 	if FirstCreationDate != "" {
 		res, err := strconv.Atoi(FirstCreationDate)
 		if err != nil {
-			slog.Error(err.Error()) // fix
+			slog.Error(err.Error())
 		}
-		flt.FirstCreationDate = res
+		flt.CreationDate = res
 	}
 
-	LastCreationDate := r.FormValue("ToCreationDate")
+	FirstAlbum := r.FormValue("FirstRelease")
+	fmt.Println("First release: ", FirstAlbum)
 
-	if LastCreationDate != "" {
-		res, err := strconv.Atoi(LastCreationDate)
-		if err != nil {
-			slog.Error(err.Error()) // fix
-		}
-		flt.LastCreationDate = res
-	}
-
-	// done
-
-	LowestFirstAlbum := r.FormValue("FromFirstAlbumDate")
-
-	if LowestFirstAlbum != "" {
-		date, err := time.Parse(time.DateOnly, LowestFirstAlbum)
+	if FirstAlbum != "" {
+		date, err := strconv.Atoi(FirstAlbum)
 		if err != nil {
 			slog.Error(err.Error())
 		}
-		flt.LowestFirstAlbum = date
-	}
-
-	HighestFirstAlbum := r.FormValue("ToFirstAlbumDate")
-
-	if HighestFirstAlbum != "" {
-		date, err := time.Parse(time.DateOnly, HighestFirstAlbum)
-		if err != nil {
-			slog.Error(err.Error())
-		}
-		flt.HighestFirstAlbum = date
+		flt.FirstRelease = date
 	}
 
 	Locations := r.FormValue("locations")
@@ -133,7 +112,8 @@ func readRequest(r *http.Request) (flt entity.Filters) {
 	flt.Locations = locs
 
 	// Создаём слайс так как нам нужно будет проверять каждый checkbox и это удобно будет сделать через слайс
-	numMembers := make([]int, 0, 8)
+	numMembers := make([]int, 0, 8) // len = 0
+	flt.Members = numMembers
 
 	for i := 1; i < 8; i++ {
 		memberKey := fmt.Sprintf("members%d", i) // Sprintf == Printf но не выводит в консоль а возвращает строку
@@ -145,26 +125,23 @@ func readRequest(r *http.Request) (flt entity.Filters) {
 			numMembers = append(numMembers, mNum)
 		}
 	}
-
 	flt.Members = numMembers
 
 	return flt
 }
 
 func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
-	minYear := 1899
+	minYear := 1962
 	minMember := 1
 	maxMember := 8
 
-	if fltData.LastCreationDate >= minYear && fltData.LastCreationDate <= time.Now().Year() {
-		flt.FirstCreationDate = fltData.FirstCreationDate //
-		flt.LastCreationDate = fltData.LastCreationDate   //
+	if fltData.CreationDate >= minYear && fltData.CreationDate <= time.Now().Year() {
+		flt.CreationDate = fltData.CreationDate //
 	}
 
 	// II. firstAlbumDate >= minYear 1899 && firstAlbumDate <= time.Now().Year()
-	if fltData.LowestFirstAlbum.Year() >= minYear && fltData.HighestFirstAlbum.Year() <= time.Now().Year() {
-		flt.LowestFirstAlbum = fltData.LowestFirstAlbum
-		flt.HighestFirstAlbum = fltData.HighestFirstAlbum
+	if fltData.FirstRelease >= minYear && fltData.FirstRelease <= time.Now().Year() {
+		flt.FirstRelease = fltData.FirstRelease
 	}
 
 	// III. Number of Members || numMembers >= 1 && numMembers <= 8
@@ -197,6 +174,7 @@ func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
 
 // Filter
 func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.Artist) {
+	// red case = early exit
 
 	for _, group := range artists {
 		matchloc := false   //location
@@ -205,24 +183,24 @@ func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.
 		matchalbum := false // first album
 
 		// I. creation date
-		if group.CreationDate >= flt.FirstCreationDate && group.CreationDate <= flt.LastCreationDate {
+		if group.CreationDate >= flt.CreationDate && group.CreationDate <= flt.CreationDate {
 			matchcd = true
-			fmt.Println("mathc by some params")
+			fmt.Println("mathc by creation date")
 		}
 
 		// II. album publish
-		if convStrToTime(group.FirstAlbum) >= flt.LowestFirstAlbum.Year() && convStrToTime(group.FirstAlbum) <= flt.HighestFirstAlbum.Year() {
+		if convStrToTime(group.FirstAlbum) >= flt.FirstRelease && convStrToTime(group.FirstAlbum) <= flt.FirstRelease {
 			matchalbum = true
+			fmt.Println("match by first release")
 		}
 
 		// III. members number
 		for _, memNum := range flt.Members {
-			if memNum == len(group.Members) {
+			if memNum == len(group.Members) { // fix this bug
 				matchmn = true
+				fmt.Println("match by members")
 				break
-
 			}
-			matchmn = false
 		}
 
 		// IV. location
@@ -231,14 +209,18 @@ func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.
 			loc = webapi.ParseAndFormatLocations(loc)
 			if flt.Locations[0] == loc {
 				matchloc = true
+				fmt.Println("match by location")
 				break
 			}
-			matchloc = false
 		}
 
-		if (matchcd || matchalbum) || (matchmn || matchloc) { //if anyone is true, it's ok -> and= 1. true || true, 2. false || true
+		if matchcd || matchalbum || matchmn || matchloc { //if anyone is true, it's ok -> and= 1. true || true, 2. false || true
+			fmt.Printf("Filters params: %+v \n", flt)
+			fmt.Printf("matchcd: %v, matchalbum: %v, matchmn: %v, matchloc: %v \n\n", matchcd, matchalbum, matchmn, matchloc)
+			fmt.Printf("All groups: %v, Total groups filtered: %v, group: %#+v \n", len(artists), len(filteredArt), group) // %v = Daniil, %+v group.Name: Daniil, filter.go->group.Name: Daniil
 			filteredArt = append(filteredArt, group)
 		}
+
 	}
 
 	return filteredArt

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"sort"
-	"time"
+	// "time"
 
 	"groupie-tracker/internal/asort"
 	"groupie-tracker/internal/entity"
@@ -36,31 +36,12 @@ func PrepareFilterData(artists []entity.Artist) (*entity.Filters, error) {
 // AddCreationDate
 func AddCreationDate(artists []entity.Artist, filter *entity.Filters) *entity.Filters {
 	sort.Sort(asort.SArtists(artists))
-	lasti := len(artists) - 1
-
-	filter.FirstCreationDate = artists[0].CreationDate
-	filter.LastCreationDate = artists[lasti].CreationDate
 
 	return filter
 }
 
 func AddFirstAlbumPublishDate(artists []entity.Artist, filter *entity.Filters) *entity.Filters {
 	sort.Sort(asort.SArtists(artists))
-	lastalb := len(artists) - 1
-	timeFormat := "02-01-2006"
-
-	ldate, err := time.Parse(timeFormat, artists[0].FirstAlbum)
-	if err != nil {
-		slog.Error(err.Error())
-	}
-
-	hdate, err := time.Parse(timeFormat, artists[lastalb].FirstAlbum)
-	if err != nil {
-		slog.Error(err.Error())
-	}
-
-	filter.LowestFirstAlbum = ldate
-	filter.HighestFirstAlbum = hdate
 
 	return filter
 }

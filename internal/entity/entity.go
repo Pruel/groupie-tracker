@@ -1,7 +1,5 @@
 package entity
 
-import "time"
-
 type Artist struct {
 	ID           int      `json:"id"`
 	Name         string   `json:"name"`
@@ -56,12 +54,10 @@ type MainData struct {
 }
 
 type Filters struct {
-	FirstCreationDate int
-	LastCreationDate  int
-	LowestFirstAlbum  time.Time
-	HighestFirstAlbum time.Time
-	Members           []int
-	Locations         []string
+	CreationDate int
+	FirstRelease int
+	Members      []int
+	Locations    []string
 }
 
 type SearchData map[string]string
