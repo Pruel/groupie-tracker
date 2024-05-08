@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"groupie-tracker/internal/entity"
 	"groupie-tracker/internal/filter"
 	"groupie-tracker/internal/webapi"
@@ -16,11 +17,10 @@ const (
 	NameType         = " - artist/band"
 	LocationType     = " - location"
 	MembersType      = " - member"
-	creationDateType = " - creation date"
+	CreationDateType = " - creation date"
 	PubType          = " - first album date"
 )
 
-// Davai imposter pishi constanты
 func SearchController(w http.ResponseWriter, r *http.Request) {
 	tmp := template.Must(template.ParseFiles(GetTmplFilepath("main.html")))
 
@@ -39,14 +39,18 @@ func SearchController(w http.ResponseWriter, r *http.Request) {
 	udata := getAllUniqueSuggestions(artists)
 
 	// Получение значений поиска
-	requestUser, err := getSearchValue(r)
+	requestUser, err := getSearchValue(r) // Janika
 	if err != nil {
 		slog.Error(err.Error())
 		return
 	}
 
+	searchValue := r.FormValue("search")
+
+	fmt.Printf("\nSearchValue: %v \n", searchValue)
+
 	// Ищем по запросу
-	foundGroups := Search(requestUser, artists)
+	foundGroups := Search(requestUser, "text", artists) // Daniil
 
 	mdata := entity.MainData{
 		Artists:     foundGroups,
@@ -71,35 +75,98 @@ func SearchController(w http.ResponseWriter, r *http.Request) {
 
 // II
 // getSearchValue
-func getSearchValue(r *http.Request) (searchValue string, err error) {
+func getSearchValue(r *http.Request) (searchValue string, searchType string) {
 
 	// read request body = r.FormValue("search") - метод используется для получения значения поля ввода
 	// <input type="text" name="search" - отправленное через HTML форму
-	searchValue = r.FormValue("search") // "Value - Type " = ""
-
-	// check search value, if str is empty -> return error
-	if searchValue == "" {
-		slog.Error(err.Error())
-	}
-	// if ok, return search value
-
-	return searchValue, nil
-}
-
-// III
-// Search(searchValue string, artists []entity.Artists), search by group name, and return found groups = foundGroups []entity.Artists
-func Search(searchValue string, artist []entity.Artist) []entity.Artist {
-	var foundGroups []entity.Artist
-
-	if artist != nil {
-		for _, group := range artist {
-			if strings.Contains(group.Name, searchValue) {
-				foundGroups = append(foundGroups, group)
-			}
+	searchValue = r.FormValue("search") // "Value - Type " = "" || "Eminem - artist/band"
+	
+	// 1. validate search query, " - ", "", strings.Contains(str, " - ")
+	if len(searchValue) != 0 {
+		if !strings.Contains(searchValue, " - ") { 
+			slog.Error("Invalid search query")
 		}
 	}
+	
+	// 2. split search query by " - ", ->
+	// strSlice := strings.Split(searchValue, " - ") // strSlice := strings.Split(str, substr) -> []string{"value", "type") || strSlice[0] = value, strSlice[1] = searchType
+	slice := strings.Split(searchValue, " - ")
+	
 
-	return foundGroups
+	return slice[0], slice[1]
+}
+
+func Search(searchValue string, searchType string) ([]entity.Artist, error) {
+	// Функция поиска для обработки сценариев
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // III
+// // Search(searchValue string, artists []entity.Artists), search by group name, and return found groups = foundGroups []entity.Artists
+// func Search(searchValue string, searchType string, artist []entity.Artist) (foundGroups []entity.Artist) {
+// 	if searchValue == "" || searchType == "" {
+// 		slog.Error("")
+// 		return nil
+// 	}
+
+// 	switch searchType { // searchType = " - members" ||
+// 	case NameType:
+// 		// searchByName, Daniil
+// 	case MembersType:
+// 		// searchByMemebers() here be func for our logic programm, Janika
+// 	case LocationType:
+// 		// searchByLocations, Daniil
+// 	case PubType:
+// 		// searchByReleaseAlbum, Janika
+// 	default:
+
+// 	}
+
+// 	// NameType         = " - artist/band"
+// 	// LocationType     = " - location"
+// 	// MembersType      = " - member"
+// 	// CreationDateType = " - creation date"
+// 	// PubType
+
+// 	return foundGroups
+// }
+
+func searchByName(searchValue string) []entity.Artist {
+	// var foundGroups []entity.Artist
+
+	// if artist != nil {
+	// 	for _, group := range artist {
+	// 		if strings.Contains(group.Name, searchValue) {
+	// 			foundGroups = append(foundGroups, group)
+	// 		}
+	// 	}
+	// }
+
+	// return foundGroups
 	// check artists on not nil (artists type slice, zero value of the slice is nil)
 	// if ok
 	// for _, group := range artists {
@@ -112,6 +179,7 @@ func Search(searchValue string, artist []entity.Artist) []entity.Artist {
 	// }
 	//  after return foundGroups
 
+	return nil
 }
 
 func getAllUniqueSuggestions(dataArtist []entity.Artist) map[string]string {
@@ -149,7 +217,7 @@ func getAllUniqueSuggestions(dataArtist []entity.Artist) map[string]string {
 		// 4. unique creation date // Daniil
 		year := strconv.Itoa(artist.CreationDate)
 		if _, ok := udata[year]; !ok {
-			udata[year] = year + creationDateType
+			udata[year] = year + CreationDateType
 		}
 
 		// 5. unique first album publishing // Yanika Time.Year()

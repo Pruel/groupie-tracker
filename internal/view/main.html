@@ -15,11 +15,13 @@
         
         <form action="/search" method="POST" class="header__search">
             <img src="static/image/loupe.png" alt="Search Icon" class="search-icon">
-            <input type="search" placeholder="Search" name="search" id="search">
-            <datalist id="search">
+            <input type="search" placeholder="Search..." name="search" id="search_list">
+            
+            <datalist id="search_list">
                 {{range $key, $value := .SearchData}} 
-                <option data-key="{{$key}}" value="{{$value}}">{{$value}}</option> 
-                {{end}}
+                <!-- Fix this bug -->
+                <option value="{{$value}}">{{$value}}</option> 
+                {{end}} 
             </datalist>
         </form>
     
