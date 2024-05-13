@@ -30,7 +30,7 @@ GET https://groupietrackers.herokuapp.com/api/locations HTTP/1.1
 ### 
 # locations by id endpoint
 
-GET https://groupietrackers.herokuapp.com/api/locations/1 HTTP/1.1
+GET https://groupietrackers.herokuapp.com/api/locations/5 HTTP/1.1
 
 ###
 # dates endpoint

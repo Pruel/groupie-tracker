@@ -32,9 +32,13 @@ func FilterController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	srchData := getAllUniqueSuggestions(artists)
+	// call getAllUniqueSuggestions
+
 	mdata := entity.MainData{
 		Artists:     artists,
 		FiltersData: *fltData,
+		SearchData:  srchData,
 	}
 
 	if r.Method != http.MethodPost {
@@ -43,16 +47,13 @@ func FilterController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("POST METHOD")
-
 	// readValidateAndSaveFilterData вызываем функцию
 	readValidateAndSaveFilterData(r, fltData)
 
 	// filter
-	filteredArtists := Filter(fltData, artists)
+	filteredArtists, message := Filter(fltData, artists)
 	mdata.Artists = filteredArtists
-
-	fmt.Printf("\n\n2. after recieve data from front-end, filtersData: %+v\n\n", fltData)
+	mdata.Message = message
 
 	if err := tmp.Execute(w, mdata); err != nil {
 		slog.Error(err.Error())
@@ -95,7 +96,6 @@ func readRequest(r *http.Request, flt *entity.Filters) *entity.Filters {
 	}
 
 	FirstAlbum := r.FormValue("FirstRelease")
-	fmt.Println("First release: ", FirstAlbum)
 
 	if FirstAlbum != "" {
 		date, err := strconv.Atoi(FirstAlbum)
@@ -105,17 +105,21 @@ func readRequest(r *http.Request, flt *entity.Filters) *entity.Filters {
 		flt.FirstRelease = date
 	}
 
-	Locations := r.FormValue("locations")
+	Location := r.FormValue("locations")
 	locs := make([]string, 0, 1)
 
-	locs = append(locs, Locations)
+	if Location == "" {
+		Location = "default, defualt" // "city, country"
+	}
+
+	locs = append(locs, Location)
 	flt.Locations = locs
 
 	// Создаём слайс так как нам нужно будет проверять каждый checkbox и это удобно будет сделать через слайс
 	numMembers := make([]int, 0, 8) // len = 0
 	flt.Members = numMembers
 
-	for i := 1; i < 8; i++ {
+	for i := 1; i < 9; i++ { //
 		memberKey := fmt.Sprintf("members%d", i) // Sprintf == Printf но не выводит в консоль а возвращает строку
 		if member := r.FormValue(memberKey); member != "" {
 			mNum, err := strconv.Atoi(member)
@@ -136,7 +140,7 @@ func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
 	maxMember := 8
 
 	if fltData.CreationDate >= minYear && fltData.CreationDate <= time.Now().Year() {
-		flt.CreationDate = fltData.CreationDate //
+		flt.CreationDate = fltData.CreationDate
 	}
 
 	// II. firstAlbumDate >= minYear 1899 && firstAlbumDate <= time.Now().Year()
@@ -173,7 +177,7 @@ func validateAndSaveData(flt *entity.Filters, fltData entity.Filters) {
 }
 
 // Filter
-func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.Artist) {
+func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.Artist, message string) {
 	// red case = early exit
 
 	for _, group := range artists {
@@ -185,45 +189,43 @@ func Filter(flt *entity.Filters, artists []entity.Artist) (filteredArt []entity.
 		// I. creation date
 		if group.CreationDate >= flt.CreationDate && group.CreationDate <= flt.CreationDate {
 			matchcd = true
-			fmt.Println("mathc by creation date")
 		}
 
 		// II. album publish
 		if convStrToTime(group.FirstAlbum) >= flt.FirstRelease && convStrToTime(group.FirstAlbum) <= flt.FirstRelease {
 			matchalbum = true
-			fmt.Println("match by first release")
 		}
 
 		// III. members number
 		for _, memNum := range flt.Members {
-			if memNum == len(group.Members) { // fix this bug
+			if memNum == len(group.Members) {
 				matchmn = true
-				fmt.Println("match by members")
 				break
 			}
 		}
 
 		// IV. location
-		bufLocs, _ := webapi.New().GetLocationsByURL(group.Locations)
-		for _, loc := range bufLocs.Locations {
+		bufLocs, _ := webapi.New().GetLocationsByURL(group.Locations) // artists -> artist.Location = url -> request -> []stirng{"New York, USA", }
+		for _, loc := range bufLocs.Locations {                       // Members + Locations <- defualt
 			loc = webapi.ParseAndFormatLocations(loc)
 			if flt.Locations[0] == loc {
 				matchloc = true
-				fmt.Println("match by location")
 				break
 			}
 		}
 
-		if matchcd || matchalbum || matchmn || matchloc { //if anyone is true, it's ok -> and= 1. true || true, 2. false || true
-			fmt.Printf("Filters params: %+v \n", flt)
-			fmt.Printf("matchcd: %v, matchalbum: %v, matchmn: %v, matchloc: %v \n\n", matchcd, matchalbum, matchmn, matchloc)
-			fmt.Printf("All groups: %v, Total groups filtered: %v, group: %#+v \n", len(artists), len(filteredArt), group) // %v = Daniil, %+v group.Name: Daniil, filter.go->group.Name: Daniil
+		if matchcd || matchalbum || matchmn || matchloc {
 			filteredArt = append(filteredArt, group)
 		}
 
 	}
 
-	return filteredArt
+	if len(filteredArt) == 0 {
+		// logic
+		message = "No group matches the requested parameter"
+	}
+
+	return filteredArt, message
 }
 
 // convStrToTime, return time.Time.Year

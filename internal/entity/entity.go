@@ -51,6 +51,7 @@ type MainData struct {
 	Artists     []Artist
 	FiltersData Filters
 	SearchData  SearchData
+	Message     string
 }
 
 type Filters struct {

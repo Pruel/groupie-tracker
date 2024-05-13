@@ -42,7 +42,7 @@ func GetTmplFilepath(tmplName string) (tmplFilepath string) {
 	return tmplFilepath
 }
 
-func MainController(w http.ResponseWriter, r *http.Request) {
+func MainController(w http.ResponseWriter, r *http.Request) { // index.html, -> / <- index.html
 	// parsing a template
 	tmp := template.Must(template.ParseFiles(GetTmplFilepath("main.html")))
 	// error handling
@@ -66,10 +66,14 @@ func MainController(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		slog.Debug("Error prepare filter data")
 	}
+
+	udata := getAllUniqueSuggestions(artists) // this code line
+
 	// prepare filter date
 	mdata := entity.MainData{ // container structure
 		Artists:     fgroups,
 		FiltersData: *filtersData, // *Pointer, zero value > nil
+		SearchData:  udata,
 
 		// &value = *Pointer = addres of the RAM // reference || *Pointer = Ox1f3f5d56fd
 

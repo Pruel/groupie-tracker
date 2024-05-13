@@ -37,21 +37,16 @@ func SearchController(w http.ResponseWriter, r *http.Request) {
 
 	// data <- getAllUniqueSuggestions
 	udata := getAllUniqueSuggestions(artists)
+	// fmt.Printf("Unique Sugesstion: %v \n\n", udata) // ++
+	//
 
 	// Получение значений поиска
-	requestUser, err := getSearchValue(r) // Janika
-	if err != nil {
-		slog.Error(err.Error())
-		return
-	}
-
-	searchValue := r.FormValue("search")
-
-	fmt.Printf("\nSearchValue: %v \n", searchValue)
+	sValue, sType := getSearchValue(r) // Janika, // sValue, sType
 
 	// Ищем по запросу
-	foundGroups := Search(requestUser, "text", artists) // Daniil
-
+	foundGroups, err := Search(sValue, sType, artists)
+	// error cheking
+	fmt.Printf("\n\nResult: %v\n\n", foundGroups)
 	mdata := entity.MainData{
 		Artists:     foundGroups,
 		FiltersData: *filtersData,
@@ -73,113 +68,148 @@ func SearchController(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// II
-// getSearchValue
+// II getSearchValue
 func getSearchValue(r *http.Request) (searchValue string, searchType string) {
 
 	// read request body = r.FormValue("search") - метод используется для получения значения поля ввода
 	// <input type="text" name="search" - отправленное через HTML форму
 	searchValue = r.FormValue("search") // "Value - Type " = "" || "Eminem - artist/band"
-	
+
 	// 1. validate search query, " - ", "", strings.Contains(str, " - ")
-	if len(searchValue) != 0 {
-		if !strings.Contains(searchValue, " - ") { 
+	if len(searchValue) != 0 { // "Value" -> big <- front
+		if !strings.Contains(searchValue, " - ") {
 			slog.Error("Invalid search query")
 		}
 	}
-	
+
 	// 2. split search query by " - ", ->
 	// strSlice := strings.Split(searchValue, " - ") // strSlice := strings.Split(str, substr) -> []string{"value", "type") || strSlice[0] = value, strSlice[1] = searchType
 	slice := strings.Split(searchValue, " - ")
-	
 
 	return slice[0], slice[1]
 }
 
-func Search(searchValue string, searchType string) ([]entity.Artist, error) {
-	// Функция поиска для обработки сценариев
-	
+// III Search
+func Search(searchValue string, searchType string, artists []entity.Artist) (foundGroups []entity.Artist, err error) {
+	fmt.Printf("Equal: %v , sType: %s = NameType: %s\n", searchType == NameType, searchType, NameType)
+
+	searchType = " - " + searchType
+
+	fmt.Printf("Equal: %v , sType: %s = NameType: %s\n", searchType == NameType, searchType, NameType)
+
+	switch searchType {
+	case NameType:
+		foundGroups = searchByName(searchValue, artists) // +++
+	case MembersType:
+		foundGroups = searchByMemebers(searchValue, artists) // +++
+	case LocationType:
+		foundGroups = searchByLocations(searchValue, artists) // +++
+	case CreationDateType:
+		foundGroups = searchByCreateGroup(searchValue, artists) // +++
+	case PubType:
+		foundGroups = searchByPublicAlbum(searchValue, artists) // +++
+	}
+
+	return foundGroups, nil
 }
 
+func searchByName(searchValue string, artists []entity.Artist) (foundGroups []entity.Artist) {
+	if artists == nil {
+		slog.Error("Error, empty data")
+		return nil
+	}
 
+	fmt.Println("calling searchByName")
 
+	for _, elem := range artists {
+		if searchValue == elem.Name {
+			foundGroups = append(foundGroups, elem)
+		}
+	}
 
+	return foundGroups
+}
 
+func searchByMemebers(searchValue string, artists []entity.Artist) (foundGroups []entity.Artist) {
+	if artists == nil {
+		slog.Error("Error, empty data")
+		return nil
+	}
 
+	for _, group := range artists {
+		for _, mem := range group.Members {
+			if searchValue == mem {
+				foundGroups = append(foundGroups, group)
+			}
+		}
+	}
 
+	return foundGroups
+}
 
+func searchByLocations(searchValue string, artist []entity.Artist) (foundGroups []entity.Artist) {
+	if artist == nil {
+		slog.Error("Error, empty data")
+		return nil
+	}
 
+	for _, elem := range artist {
+		location, _ := webapi.New().GetLocationsByURL(elem.Locations)
+		for _, loc := range location.Locations {
+			loc = webapi.ParseAndFormatLocations(loc)
 
+			if loc == searchValue {
+				foundGroups = append(foundGroups, elem)
+			}
+		}
+	}
 
+	return foundGroups
+}
 
+func searchByCreateGroup(searchValue string, artist []entity.Artist) (foundGroups []entity.Artist) {
+	if artist == nil {
+		slog.Error("Error, empty data")
+		return nil
+	}
 
+	for _, elem := range artist {
+		if strconv.Itoa(elem.CreationDate) == searchValue {
+			foundGroups = append(foundGroups, elem)
+		}
+	}
 
+	return foundGroups
+}
 
+func searchByPublicAlbum(searchValue string, artist []entity.Artist) (foundGroups []entity.Artist) {
+	if artist == nil {
+		slog.Error("Error, empty data")
+		return nil
+	}
+	timeFormat := "02-01-2006" // Important Golang date ;-) || time.Year(), time.Month(), time.Day, time.Minute, time.Second, time.Parse. Если у нас есть условная дата, то лучше проводить манипуляции
+	// вместе с пакетом time(), ну и так семантически вернее будет.
 
+	// str -> year
 
+	// 1. str -> time -> time.Year // 1. time.Parse(timeFormat, str)
+	// 2. str -> strings.CutPrefix = "02-01-2006"
 
+	for _, elem := range artist {
+		// first a
+		// Функция time parse возвращает error. Мы можем опустить ошибку, но это анти-паттерн и по хорошему если функция возвращает ошибку, то мы её тоже пишем!!!
+		firstAlbum, err := time.Parse(timeFormat, elem.FirstAlbum) // firstAlbum = type time
+		if err != nil {
+			slog.Error(err.Error())
+			return nil
+		}
 
+		if strconv.Itoa(firstAlbum.Year()) == searchValue {
+			foundGroups = append(foundGroups, elem)
+		}
+	}
 
-
-
-
-
-
-// // III
-// // Search(searchValue string, artists []entity.Artists), search by group name, and return found groups = foundGroups []entity.Artists
-// func Search(searchValue string, searchType string, artist []entity.Artist) (foundGroups []entity.Artist) {
-// 	if searchValue == "" || searchType == "" {
-// 		slog.Error("")
-// 		return nil
-// 	}
-
-// 	switch searchType { // searchType = " - members" ||
-// 	case NameType:
-// 		// searchByName, Daniil
-// 	case MembersType:
-// 		// searchByMemebers() here be func for our logic programm, Janika
-// 	case LocationType:
-// 		// searchByLocations, Daniil
-// 	case PubType:
-// 		// searchByReleaseAlbum, Janika
-// 	default:
-
-// 	}
-
-// 	// NameType         = " - artist/band"
-// 	// LocationType     = " - location"
-// 	// MembersType      = " - member"
-// 	// CreationDateType = " - creation date"
-// 	// PubType
-
-// 	return foundGroups
-// }
-
-func searchByName(searchValue string) []entity.Artist {
-	// var foundGroups []entity.Artist
-
-	// if artist != nil {
-	// 	for _, group := range artist {
-	// 		if strings.Contains(group.Name, searchValue) {
-	// 			foundGroups = append(foundGroups, group)
-	// 		}
-	// 	}
-	// }
-
-	// return foundGroups
-	// check artists on not nil (artists type slice, zero value of the slice is nil)
-	// if ok
-	// for _, group := range artists {
-	//     if strings.Contains(group.Name, searchValue) -> ok = true {
-	// foundGroups = append(foundGroups, group)
-	//        }
-	//      for _, loc := group.Locations {
-	// if loc == searchValue {}
-	//         }
-	// }
-	//  after return foundGroups
-
-	return nil
+	return foundGroups
 }
 
 func getAllUniqueSuggestions(dataArtist []entity.Artist) map[string]string {
