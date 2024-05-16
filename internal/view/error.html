@@ -5,17 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/error.css">
-    <link rel="icon" type="image/png" sizes="16x16" href="../static/favicon/favicon_groupie_tracker_16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="..static/favicon/favicon_groupie_tracker_32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon_groupie_tracker_16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon_groupie_tracker_32.png">
     <title>Error Page</title>
 </head>
 <body class="background-image">
-    <!-- <img src="./images/Party_not_found.jpg" alt=""> -->
-    <div class="error-message">
-        {{.}}
-    </div>
-    <div class="button-container">
-        <button onclick="window.location.href='/'">Back</button>
+    <div class="content">
+        <img src="/static/image/Party_not_found.jpg" class="background-image">
+        <div class="error-message">
+            404 NOT FOUND
+        </div>
+        <div class="button-container">
+            <button onclick="window.location.href='/'">Back</button>
+        </div>
     </div>
 </body>
 </html>
