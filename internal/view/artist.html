@@ -21,7 +21,7 @@
         </div>
         <div class="info">
             <section class="concerts">
-                <h3>Concerts:</h3>
+                <!-- <h3>Concerts:</h3>
                 <ul>
                     {{range $city, $dates := .Relations.DatesLocations}}
                         <li class="city">
@@ -34,7 +34,13 @@
                         </li>
                     {{end}}
                 </ul>
-            </section>
+            </section> -->
+
+            <h3> Concerts geolocalization:</h3>
+            <div id="gmaps" class="gmap">
+
+            </div>
+
             <section class="members">
                 <h3>Members:</h3>
                 <ul>
@@ -45,5 +51,38 @@
             </section>
         </div>
     </main>
+    <!-- geolocalization script -->
+    <script>
+        var geolocs = JSON.parse('{{.Geolocations}}')
+
+        function initMap() {
+            geocoder  = new google.maps.Geocoder();
+            var LatLng = new google.maps.LatLng(0, 0);
+            var mapCfg = {
+                zoom: 1,
+                center: LatLng
+            } 
+
+            gmap = new google.maps.Map(document.getElementById('gmaps'), mapCfg)
+            geolocs.forEach(loc => {
+                geocoder.geocode({ address: loc}, function (results, status){
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        var marker = new google.maps.Marker(
+                            {
+                                map: gmap,
+                                position: results[0].geometry.location
+                            });
+                    } else {
+                        alert('Ooops, something going wrong: ' + status);
+                    }
+                });
+            });
+        }
+    </script>
+
+    <!-- google maps api  -->
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyVZ_EFDp_kJe466QWs8SAt0TP6CSzQWk&callback=initMap">
+    </script>
 </body>
 </html>

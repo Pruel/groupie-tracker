@@ -42,6 +42,11 @@ li {
     font-size: 18px;
 }
 
+.gmap {
+    width: 1000px;
+    height: 400px;
+}
+
 .artist {
     display: flex;
     flex-direction: column;

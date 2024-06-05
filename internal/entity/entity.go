@@ -13,10 +13,11 @@ type Artist struct {
 }
 
 type ArtistInfo struct {
-	Artist    Artist
-	Locations Locations
-	Dates     Dates
-	Relations Relations
+	Artist       Artist
+	Locations    Locations
+	Geolocations string
+	Dates        Dates
+	Relations    Relations
 }
 
 type Locations struct {
